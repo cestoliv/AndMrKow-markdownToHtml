@@ -200,6 +200,17 @@ render = (text, withSyntaxeElements = false) => { // translate markdown into htm
     return(parsedText) // return text
 }
 
+without = (markdown, lenght = "all") => {
+    var res = render(markdown).replace(/<\/p>/g, '\n')
+    res = res.replace(/<\/h.>/g, '\n')
+    res = res.replace(/<[^>]*>?/g, '')
+
+    if(lenght != "all") {
+        res = res.substr(0, lenght)
+    }
+    return res
+}
+
 htmlspecialchars = (str) => {
     if (typeof(str) == "string") {
         str = str.replace(/&/g, "&amp;");
