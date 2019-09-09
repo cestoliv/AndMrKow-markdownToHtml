@@ -51,7 +51,7 @@ Surrounding words with an asterisk or bottom dash (on each side) will put them i
 `Here *are two* italic _text_.` >> `<p>Here <em>are two</em> italic <em>text</em>.</p>`
 
 ### Code block
-Indenting in front of a line will make a block of code.
+Indenting in front of a line will make a block of code (after a line break, otherwise, it's just an indentation).
 
 `   console.log("hello world!")` >> `<pre><code>console.log("hello world!")</code></pre>`
 

@@ -1,6 +1,6 @@
 //AndMrKow-markdownToHtml
 
-render = (text, withSyntaxeElements = false) => { // translate markdown into html
+exports.render = (text, withSyntaxeElements = false) => { // translate markdown into html
     text = text.replace(/ /g, "&nbsp;") // replace all the space by html space (for allowing multiple space)
 
     var parsedText = "" // will contain all the html text to return
@@ -208,8 +208,8 @@ render = (text, withSyntaxeElements = false) => { // translate markdown into htm
     return(parsedText) // return text
 }
 
-without = (markdown, lenght = "all") => {
-    var res = render(markdown).replace(/<\/p>/g, '\n')
+exports.without = (markdown, lenght = "all") => {
+    var res = this.render(markdown).replace(/<\/p>/g, '\n')
     res = res.replace(/<\/h.>/g, '\n')
     res = res.replace(/<[^>]*>?/g, '')
 
