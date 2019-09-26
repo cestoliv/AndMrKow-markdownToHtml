@@ -1,7 +1,7 @@
 //AndMrKow-markdownToHtml
 
 render = (text, withSyntaxeElements = false) => { // translate markdown into html
-    text = text.replace(/ /g, "&nbsp;") // replace all the space by html space (for allowing multiple space)
+    //text = text.replace(/ /g, "&nbsp;") // replace all the space by html space (for allowing multiple space)
 
     var parsedText = "" // will contain all the html text to return
 
@@ -15,6 +15,8 @@ render = (text, withSyntaxeElements = false) => { // translate markdown into htm
         var isComment = false // will be true if the current line is a comment
         var regex, found // regex : contain the regex, found : contain results of regex match
 
+        lines[line] = escapeChars(lines[line])
+        console.log(escapeChars(lines[line]))
     //COMMENT
         if(/^\/\/(.+)/.exec(lines[line])) { // if the current line start with a double slash
             if(!withSyntaxeElements) { // if syntaxe elements should not be shown, otherwise we do nothing (we keep the comment).
@@ -47,52 +49,6 @@ render = (text, withSyntaxeElements = false) => { // translate markdown into htm
             if(isCode) { // if the previous line was a part of code
                 parsedText += "</code></pre>" // close the code block
                 isCode = false // say the current line is not a part of code
-            }
-
-        //IMAGES
-            regex = /!\[(.+?)\]\((.+?)\)/g // search if word/sentence respects the pattern ![title/desc](link)
-            found = lines[line].match(regex) // put matching word/sentence of th current line in the found array
-            for(i in found) { // read found array
-                let data = /!\[(.+?)\]\((.+?)\)/g.exec(found[i]) // actualize the regex (otherwise it keep the last matching word/sentence)
-
-                let text = "" // text = the text in "alt" if withSyntaxElements is false, or the syntax element if is true
-                if(withSyntaxeElements) { // if syntaxe elements should be shown
-                    text = "![" + RegExp.$1 + '](<a href="' + htmlspecialchars(RegExp.$2) + '" target="_blank" rel="noopener, noreferrer">' + RegExp.$2 + "</a>)" // re-add the syntax elements
-                }
-                lines[line] = lines[line].replace("![" + RegExp.$1 +"](" + RegExp.$2 + ")", text + '<img src="' + htmlspecialchars(RegExp.$2) + '" alt="' + RegExp.$1 + '" />') // replace old word by the image element
-            }
-
-        //LINK
-            regex = /\[(.+?)\]\((.+?)\)\((.+?)\)|\[(.+?)\]\((.+?)\)/g // search if word/sentence respects the pattern [title/desc](link) or [title/desc](link)(param)
-            found = lines[line].match(regex) // put matching word/sentence of th current line in the found array
-            for(i in found) { // read found array
-                let data = /\[(.+?)\]\((.+?)\)\((.+?)\)|\[(.+?)\]\((.+?)\)/g.exec(found[i]) // actualize the regex (otherwise it keep the last matching word/sentence)
-
-                if(lines[line][lines[line].indexOf(found[i]) - 1] != "!") { // search the caractere juste before the "[title/desc](link)", if it's a !, it's an images
-                    if(RegExp.$3 == "") { // if RegExp.$3 is empty, the "param" section is empty, so it's a link without additionnal param
-                        let text = '<a href="' + htmlspecialchars(RegExp.$5) + '" rel="noopener, noreferrer">' + RegExp.$4 + "</a>" // text = the link
-                        if(withSyntaxeElements) { // if syntaxe elements should be shown
-                            text = "[" + RegExp.$4 + '](<a href="' + htmlspecialchars(RegExp.$5) + '" rel="noopener, noreferrer">' + text + "</a>)" // text = the link with syntax element
-                        }
-                        lines[line] = lines[line].replace("[" + RegExp.$4 +"](" + RegExp.$5 + ")", text) // replace the old word/sentence by the link
-                    }
-                    else {
-                        if(RegExp.$3 == "blank") { // if param is equal to "blank", add target="_blank" to the link
-                            let text = '<a href="' + htmlspecialchars(RegExp.$2) + '" target="_blank" rel="noopener, noreferrer">' + RegExp.$1 + "</a>" // text = the link (with target="_blank")
-                            if(withSyntaxeElements) { // if syntaxe elements should be shown
-                                text = "[" + RegExp.$1 + '](<a href="' + htmlspecialchars(RegExp.$2) + '" target="_blank" rel="noopener, noreferrer">' + RegExp.$1 + "</a>)(" + RegExp.$3 + ")" // text = the link with syntax element (with target="_blank")
-                            }
-                            lines[line] = lines[line].replace("[" + RegExp.$1 +"](" + RegExp.$2 + ")(" + RegExp.$3 + ")", text) // replace the old word/sentence by the link
-                        }
-                        else { // else, no param, same as normal link
-                            let text = '<a href="' + htmlspecialchars(RegExp.$2) + '" rel="noopener, noreferrer">' + RegExp.$1 + "</a>"
-                            if(withSyntaxeElements) { 
-                                text = "[" + RegExp.$1 + '](<a href="' + htmlspecialchars(RegExp.$2) + '" rel="noopener, noreferrer">' + RegExp.$1 + "</a>)(" + RegExp.$3 + ")"
-                            }
-                            lines[line] = lines[line].replace("[" + RegExp.$1 +"](" + RegExp.$2 + ")(" + RegExp.$3 + ")", text)
-                        }
-                    }
-                }
             }
 
         //INLINE CODE
@@ -193,6 +149,54 @@ render = (text, withSyntaxeElements = false) => { // translate markdown into htm
             } 
         }
 
+    //IMAGES
+        regex = /!\[(.+?)\]\((.+?)\)/g // search if word/sentence respects the pattern ![title/desc](link)
+        found = lines[line].match(regex) // put matching word/sentence of th current line in the found array
+        for(i in found) { // read found array
+            let data = /!\[(.+?)\]\((.+?)\)/g.exec(found[i]) // actualize the regex (otherwise it keep the last matching word/sentence)
+
+            let text = "" // text = the text in "alt" if withSyntaxElements is false, or the syntax element if is true
+            if(withSyntaxeElements) { // if syntaxe elements should be shown
+                text = "![" + RegExp.$1 + '](<a href="' + htmlspecialchars(RegExp.$2) + '" target="_blank" rel="noopener, noreferrer">' + RegExp.$2 + "</a>)" // re-add the syntax elements
+            }
+            lines[line] = lines[line].replace("![" + RegExp.$1 +"](" + RegExp.$2 + ")", text + '<img src="' + htmlspecialchars(RegExp.$2) + '" alt="' + RegExp.$1 + '" />') // replace old word by the image element
+        }
+
+    //LINK
+        regex = /\[(.+?)\]\((.+?)\)\((.+?)\)|\[(.+?)\]\((.+?)\)/g // search if word/sentence respects the pattern [title/desc](link) or [title/desc](link)(param)
+        found = lines[line].match(regex) // put matching word/sentence of th current line in the found array
+        for(i in found) { // read found array
+            let data = /\[(.+?)\]\((.+?)\)\((.+?)\)|\[(.+?)\]\((.+?)\)/g.exec(found[i]) // actualize the regex (otherwise it keep the last matching word/sentence)
+
+            if(lines[line][lines[line].indexOf(found[i]) - 1] != "!") { // search the caractere juste before the "[title/desc](link)", if it's a !, it's an images
+                if(RegExp.$3 == "") { // if RegExp.$3 is empty, the "param" section is empty, so it's a link without additionnal param
+                    let text = '<a href="' + htmlspecialchars(RegExp.$5) + '" rel="noopener, noreferrer">' + RegExp.$4 + "</a>" // text = the link
+                    if(withSyntaxeElements) { // if syntaxe elements should be shown
+                        text = "[" + RegExp.$4 + '](<a href="' + htmlspecialchars(RegExp.$5) + '" rel="noopener, noreferrer">' + text + "</a>)" // text = the link with syntax element
+                    }
+                    lines[line] = lines[line].replace("[" + RegExp.$4 +"](" + RegExp.$5 + ")", text) // replace the old word/sentence by the link
+                }
+                else {
+                    if(RegExp.$3 == "blank") { // if param is equal to "blank", add target="_blank" to the link
+                        let text = '<a href="' + htmlspecialchars(RegExp.$2) + '" target="_blank" rel="noopener, noreferrer">' + RegExp.$1 + "</a>" // text = the link (with target="_blank")
+                        if(withSyntaxeElements) { // if syntaxe elements should be shown
+                            text = "[" + RegExp.$1 + '](<a href="' + htmlspecialchars(RegExp.$2) + '" target="_blank" rel="noopener, noreferrer">' + RegExp.$1 + "</a>)(" + RegExp.$3 + ")" // text = the link with syntax element (with target="_blank")
+                        }
+                        console.log(" = " + "[" + RegExp.$1 +"](" + RegExp.$2 + ")(" + RegExp.$3 + ")")
+                        console.log(lines[line].replace("[" + RegExp.$1 +"](" + RegExp.$2 + ")(" + RegExp.$3 + ")", text))
+                        lines[line] = lines[line].replace("[" + RegExp.$1 +"](" + RegExp.$2 + ")(" + RegExp.$3 + ")", text) // replace the old word/sentence by the link
+                    }
+                    else { // else, no param, same as normal link
+                        let text = '<a href="' + htmlspecialchars(RegExp.$2) + '" rel="noopener, noreferrer">' + RegExp.$1 + "</a>"
+                        if(withSyntaxeElements) { 
+                            text = "[" + RegExp.$1 + '](<a href="' + htmlspecialchars(RegExp.$2) + '" rel="noopener, noreferrer">' + RegExp.$1 + "</a>)(" + RegExp.$3 + ")"
+                        }
+                        lines[line] = lines[line].replace("[" + RegExp.$1 +"](" + RegExp.$2 + ")(" + RegExp.$3 + ")", text)
+                    }
+                }
+            }
+        }
+
         if((lines[line] == "" || lines[line] == null) && !isComment) { // if line is empty and is not a comment
             parsedText += "<br />" // add a <br /> tag
         }
@@ -243,7 +247,26 @@ htmlspecialchars = (str) => {
     str = str.replace(/#/g, "%23")
 }
 
-escapeRegExp = (stringToGoIntoTheRegex) => {
-    console.log(stringToGoIntoTheRegex)
-    return stringToGoIntoTheRegex.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+escapeChars = (line) => {
+    line = line.replace(/\\\*/g, "&#42;") // *
+    line = line.replace(/\\`/g, "&#96;") // `
+    line = line.replace(/\\_/g, "&#95;") // _
+    line = line.replace(/\\#/g, "&#35;") // #
+    line = line.replace(/\\\+/g, "&#43;") // +
+    line = line.replace(/\\-/g, "&#8208;") // -
+    line = line.replace(/\\\./g, "&#8228;") // .
+    line = line.replace(/\\\!/g, "&#33;") // !
+
+    line = line.replace(/\\{/g, "&#123;") // {
+    line = line.replace(/\\}/g, "&#125;") // }
+
+    line = line.replace(/\\\[/g, "&#91;") // [
+    line = line.replace(/\\\]/g, "&#93;") // ]
+
+    line = line.replace(/\\\(/g, "&#40;") // (
+    line = line.replace(/\\\)/g, "&#41;") // )
+
+    line = line.replace(/\\/g, "&#92;") // \    keep in the end
+
+    return line
 }
