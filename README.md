@@ -4,10 +4,11 @@
 It's a simple tool to translate markdown into html.
 
 ------
-## andmrkow.js, to be used with Javascript, NodeJs...
-Javascript version of the tool.
+**andmrkow.js, to be used with Javascript**
+**andmrkow.node.js, to be used with node.js**
+
 ### Functions :
-**render(text, withSyntaxeElements = false)** *translate markdown into html*
+**render(text, params = {}, withSyntaxeElements = false)** *translate markdown into html*
 
 *examples :*
 
@@ -16,6 +17,13 @@ return : `<p>hello world! i'm using <strong>AndMrKow!</strong><p>`
 
 `render("hello world! i'm using **AndMrKow!**", true)`
 return : `<p>hello world! i'm using <strong>**AndMrKow!**</strong></p>`
+
+#### Params :
+
+    params = {
+        "shiftTitles": true // shift th titles : h1 became h2, h2 => h3... /!\ : h6 => h6
+    }
+
 
 **whitout = (text, lenght = "all")** *remove markdown syntax elements*
 *examples :*

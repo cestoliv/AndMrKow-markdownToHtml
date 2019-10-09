@@ -1,6 +1,6 @@
 //AndMrKow-markdownToHtml
 
-exports.render = (text, withSyntaxeElements = false) => { // translate markdown into html
+exports.render = (text, params = {},withSyntaxeElements = false) => { // translate markdown into html
     //text = text.replace(/ /g, "&nbsp;") // replace all the space by html space (for allowing multiple space)
 
     var parsedText = "" // will contain all the html text to return
@@ -16,6 +16,7 @@ exports.render = (text, withSyntaxeElements = false) => { // translate markdown 
         var regex, found // regex : contain the regex, found : contain results of regex match
 
         lines[line] = escapeChars(lines[line])
+        console.log(escapeChars(lines[line]))
     //COMMENT
         if(/^\/\/(.+)/.exec(lines[line])) { // if the current line start with a double slash
             if(!withSyntaxeElements) { // if syntaxe elements should not be shown, otherwise we do nothing (we keep the comment).
@@ -114,36 +115,62 @@ exports.render = (text, withSyntaxeElements = false) => { // translate markdown 
             if(/^# (.+)$/.exec(lines[line])) { // search if the current line start with "# "
                 noP = true // headers should not be surronded by <p> tags
                 let text = withSyntaxeElements ? "# " + RegExp.$1 : RegExp.$1 // text = "# + title"  if syntax element should be shown, otherwise, text = title
-                lines[line] = lines[line].replace("# " + RegExp.$1, "<h1>" + text + "</h1>") // replace title in text by a title surronded by <h1> tags
+                if(params["shiftTitles"]) { // h1 => h2
+                    lines[line] = lines[line].replace("# " + RegExp.$1, "<h2>" + text + "</h2>") // replace title in text by a title surronded by <h2> tags
+                }
+                else {
+                    lines[line] = lines[line].replace("# " + RegExp.$1, "<h1>" + text + "</h1>") // replace title in text by a title surronded by <h1> tags
+                }
             }
             /*h2*/
             if(/^## (.+)$/.exec(lines[line])) { // search if the current line start with "## "
                 noP = true // headers should not be surronded by <p> tags
                 let text = withSyntaxeElements ? "## " + RegExp.$1 : RegExp.$1 // text = "## + title"  if syntax element should be shown, otherwise, text = title
-                lines[line] = lines[line].replace("## " + RegExp.$1, "<h2>" + text + "</h2>") // replace title in text by a title surronded by <h2> tags
+                if(params["shiftTitles"]) { // h2 => h3
+                    lines[line] = lines[line].replace("## " + RegExp.$1, "<h3>" + text + "</h3>") // replace title in text by a title surronded by <h3> tags
+                }
+                else {
+                    lines[line] = lines[line].replace("## " + RegExp.$1, "<h2>" + text + "</h2>") // replace title in text by a title surronded by <h2> tags
+                }
             }
             /*h3*/
             if(/^### (.+)$/.exec(lines[line])) { // search if the current line start with "### "
                 noP = true // headers should not be surronded by <p> tags
                 let text = withSyntaxeElements ? "### " + RegExp.$1 : RegExp.$1 // text = "### + title"  if syntax element should be shown, otherwise, text = title
-                lines[line] = lines[line].replace("### " + RegExp.$1, "<h3>" + text + "</h3>") // replace title in text by a title surronded by <h3> tags   
+                if(params["shiftTitles"]) { // h3 => h4
+                    lines[line] = lines[line].replace("### " + RegExp.$1, "<h4>" + text + "</h4>") // replace title in text by a title surronded by <h4> tags 
+                }
+                else {
+                    lines[line] = lines[line].replace("### " + RegExp.$1, "<h3>" + text + "</h3>") // replace title in text by a title surronded by <h3> tags 
+                }  
             }
             /*h4*/
             if(/^#### (.+)$/.exec(lines[line])) { // search if the current line start with "#### "
                 noP = true // headers should not be surronded by <p> tags
                 let text = withSyntaxeElements ? "#### " + RegExp.$1 : RegExp.$1 // text = "#### + title"  if syntax element should be shown, otherwise, text = title
-                lines[line] = lines[line].replace("#### " + RegExp.$1, "<h4>" + text + "</h4>") // replace title in text by a title surronded by <h4> tags
+                if(params["shiftTitles"]) { // h4 => h5
+                    lines[line] = lines[line].replace("#### " + RegExp.$1, "<h5>" + text + "</h5>") // replace title in text by a title surronded by <h5> tags 
+                }
+                else {
+                    lines[line] = lines[line].replace("#### " + RegExp.$1, "<h4>" + text + "</h4>") // replace title in text by a title surronded by <h4> tags 
+                }  
             }
             /*h5*/
             if(/^##### (.+)$/.exec(lines[line])) { // search if the current line start with "##### "
                 noP = true // headers should not be surronded by <p> tags
                 let text = withSyntaxeElements ? "##### " + RegExp.$1 : RegExp.$1 // text = "##### + title"  if syntax element should be shown, otherwise, text = title
-                lines[line] = lines[line].replace("##### " + RegExp.$1, "<h5>" + text + "</h5>") // replace title in text by a title surronded by <h5> tags
+                if(params["shiftTitles"]) { // h5 => h6
+                    lines[line] = lines[line].replace("##### " + RegExp.$1, "<h6>" + text + "</h6>") // replace title in text by a title surronded by <h6> tags 
+                }
+                else {
+                    lines[line] = lines[line].replace("##### " + RegExp.$1, "<h5>" + text + "</h5>") // replace title in text by a title surronded by <h5> tags 
+                }
             }
             /*h6*/
             if(/^###### (.+)$/.exec(lines[line])) { // search if the current line start with "###### "
                 noP = true // headers should not be surronded by <p> tags
                 let text = withSyntaxeElements ? "###### " + RegExp.$1 : RegExp.$1 // text = "###### + title"  if syntax element should be shown, otherwise, text = title
+                // if(params["shiftTitles"]) h5 => h6, so don't change
                 lines[line] = lines[line].replace("###### " + RegExp.$1, "<h6>" + text + "</h6>") // replace title in text by a title surronded by <h6> tags
             } 
         }
@@ -181,6 +208,8 @@ exports.render = (text, withSyntaxeElements = false) => { // translate markdown 
                         if(withSyntaxeElements) { // if syntaxe elements should be shown
                             text = "[" + RegExp.$1 + '](<a href="' + htmlspecialchars(RegExp.$2) + '" target="_blank" rel="noopener, noreferrer">' + RegExp.$1 + "</a>)(" + RegExp.$3 + ")" // text = the link with syntax element (with target="_blank")
                         }
+                        console.log(" = " + "[" + RegExp.$1 +"](" + RegExp.$2 + ")(" + RegExp.$3 + ")")
+                        console.log(lines[line].replace("[" + RegExp.$1 +"](" + RegExp.$2 + ")(" + RegExp.$3 + ")", text))
                         lines[line] = lines[line].replace("[" + RegExp.$1 +"](" + RegExp.$2 + ")(" + RegExp.$3 + ")", text) // replace the old word/sentence by the link
                     }
                     else { // else, no param, same as normal link
