@@ -1,6 +1,6 @@
 //AndMrKow-markdownToHtml
 
-exports.render = (text, params = {},withSyntaxeElements = false) => { // translate markdown into html
+exports.render = (text, params = {}) => { // translate markdown into html
     //text = text.replace(/ /g, "&nbsp;") // replace all the space by html space (for allowing multiple space)
 
     var parsedText = "" // will contain all the html text to return
@@ -18,7 +18,7 @@ exports.render = (text, params = {},withSyntaxeElements = false) => { // transla
         lines[line] = escapeChars(lines[line])
     //COMMENT
         if(/^\/\/(.+)/.exec(lines[line])) { // if the current line start with a double slash
-            if(!withSyntaxeElements) { // if syntaxe elements should not be shown, otherwise we do nothing (we keep the comment).
+            if(!params["withSyntaxeElements"]) { // if syntaxe elements should not be shown, otherwise we do nothing (we keep the comment).
                 isComment = true // current line is a comment
                 noP = true // current line don't need to be surronded with <p> tags (because she's empty)
                 lines[line] = "" //empty the line
@@ -32,7 +32,7 @@ exports.render = (text, params = {},withSyntaxeElements = false) => { // transla
                     isCode = true // say that this is the beginning of a block of code
                 }
                 noP = true // code block don't need to be surronded by <p> tags
-                if(withSyntaxeElements) { // if syntaxe elements should be shown
+                if(params["withSyntaxeElements"]) { // if syntaxe elements should be shown
                     lines[line] = "\t" + RegExp.$1 + '\n' // re-add the start indentation
                 }
                 else  {
@@ -57,7 +57,7 @@ exports.render = (text, params = {},withSyntaxeElements = false) => { // transla
                 let data = regex.exec(found[i]) // actualize the regex (otherwise it keep the last matching word/sentence)
 
                 let text = RegExp.$1 // text = the text between the `
-                if(withSyntaxeElements) { // if syntaxe elements should be shown
+                if(params["withSyntaxeElements"]) { // if syntaxe elements should be shown
                     text = "`" + text + "`" // surrond text by `
                 }
                 lines[line] = lines[line].replace("`" + RegExp.$1 + "`", "<code>" + text + "</code>") // replace old word by the text surronded by <code> tags
@@ -70,7 +70,7 @@ exports.render = (text, params = {},withSyntaxeElements = false) => { // transla
                 let data = /\*\*(.+?)\*\*/.exec(found[i]) // actualize the regex (otherwise it keep the last matching word/sentence)
 
                 let text = RegExp.$1 // text = the text between the **
-                if(withSyntaxeElements) { // if syntaxe elements should be shown
+                if(params["withSyntaxeElements"]) { // if syntaxe elements should be shown
                     text = "**" + text + "**" // surrond text by **
                 }
                 lines[line] = lines[line].replace("**" + RegExp.$1 + "**", "<strong>" + text + "</strong>") // replace old word by the text surronded by <strong> tags
@@ -81,7 +81,7 @@ exports.render = (text, params = {},withSyntaxeElements = false) => { // transla
                 let data = /\_\_(.+?)\_\_/g.exec(found[i]) // actualize the regex (otherwise it keep the last matching word/sentence)
 
                 let text = RegExp.$1 // text = the text between the __
-                if(withSyntaxeElements) { // if syntaxe elements should be shown
+                if(params["withSyntaxeElements"]) { // if syntaxe elements should be shown
                     text = "__" + text + "__" // surrond text by __
                 }
                 lines[line] = lines[line].replace("__" + RegExp.$1 + "__", "<strong>" + text + "</strong>") // replace old word by the text surronded by <strong> tags
@@ -93,7 +93,7 @@ exports.render = (text, params = {},withSyntaxeElements = false) => { // transla
                 let data = /\*(.+?)\*/g.exec(found[i]) // actualize the regex (otherwise it keep the last matching word/sentence)
 
                 let text = RegExp.$1 // text = the text between the *
-                if(withSyntaxeElements) { // if syntaxe elements should be shown
+                if(params["withSyntaxeElements"]) { // if syntaxe elements should be shown
                     text = "*" + text + "*" // surrond text by *
                 }
                 lines[line] = lines[line].replace("*" + RegExp.$1 + "*", "<em>" + text + "</em>") // replace old word by the text surronded by <em> tags
@@ -104,7 +104,7 @@ exports.render = (text, params = {},withSyntaxeElements = false) => { // transla
                 let data = /\_(.+?)\_/g.exec(found[i]) // actualize the regex (otherwise it keep the last matching word/sentence)
 
                 let text = RegExp.$1 // text = the text between the _
-                if(withSyntaxeElements) { // if syntaxe elements should be shown
+                if(params["withSyntaxeElements"]) { // if syntaxe elements should be shown
                     text = "_" + text + "_" // surrond text by _
                 }
                 lines[line] = lines[line].replace("_" + RegExp.$1 + "_", "<em>" + text + "</em>") // replace old word by the text surronded by <em> tags
@@ -115,7 +115,7 @@ exports.render = (text, params = {},withSyntaxeElements = false) => { // transla
                 noP = true // headers should not be surronded by <p> tags
                 let title = RegExp.$1 // Get the title text
                 let slugTitle = this.slugify(title) // Get the title slug
-                let text = withSyntaxeElements ? "# " + title : title // text = "## + title"  if syntax element should be shown, otherwise, text = title
+                let text = params["withSyntaxeElements"] ? "# " + title : title // text = "## + title"  if syntax element should be shown, otherwise, text = title
                 if(params['sharpBefore']) { text = "# " + text } // if in params, add sharp before the title
                 if(params['titleAnchor']) { text = '<a href="#' + slugTitle + '">' + text + "</a>"} // if in params, add link to the anchor
                 let bal = params["shiftTitles"] ? '<h2 id="' + slugTitle + '">' : '<h1 id="' + slugTitle + '">' // if in params, h1 => h2
@@ -127,7 +127,7 @@ exports.render = (text, params = {},withSyntaxeElements = false) => { // transla
                 noP = true // headers should not be surronded by <p> tags
                 let title = RegExp.$1 // Get the title text
                 let slugTitle = this.slugify(title) // Get the title slug
-                let text = withSyntaxeElements ? "## " + title : title // text = "## + title"  if syntax element should be shown, otherwise, text = title
+                let text = params["withSyntaxeElements"] ? "## " + title : title // text = "## + title"  if syntax element should be shown, otherwise, text = title
                 if(params['sharpBefore']) { text = "# " + text } // if in params, add sharp before the title
                 if(params['titleAnchor']) { text = '<a href="#' + slugTitle + '">' + text + "</a>"} // if in params, add link to the anchor
                 let bal = params["shiftTitles"] ? '<h3 id="' + slugTitle + '">' : '<h2 id="' + slugTitle + '">' // if in params, h2 => h3
@@ -139,7 +139,7 @@ exports.render = (text, params = {},withSyntaxeElements = false) => { // transla
                 noP = true // headers should not be surronded by <p> tags
                 let title = RegExp.$1 // Get the title text
                 let slugTitle = this.slugify(title) // Get the title slug
-                let text = withSyntaxeElements ? "### " + title : title // text = "## + title"  if syntax element should be shown, otherwise, text = title
+                let text = params["withSyntaxeElements"] ? "### " + title : title // text = "## + title"  if syntax element should be shown, otherwise, text = title
                 if(params['sharpBefore']) { text = "# " + text } // if in params, add sharp before the title
                 if(params['titleAnchor']) { text = '<a href="#' + slugTitle + '">' + text + "</a>"} // if in params, add link to the anchor
                 let bal = params["shiftTitles"] ? '<h4 id="' + slugTitle + '">' : '<h3 id="' + slugTitle + '">' // if in params, h3 => h4
@@ -151,7 +151,7 @@ exports.render = (text, params = {},withSyntaxeElements = false) => { // transla
                 noP = true // headers should not be surronded by <p> tags
                 let title = RegExp.$1 // Get the title text
                 let slugTitle = this.slugify(title) // Get the title slug
-                let text = withSyntaxeElements ? "#### " + title : title // text = "## + title"  if syntax element should be shown, otherwise, text = title
+                let text = params["withSyntaxeElements"] ? "#### " + title : title // text = "## + title"  if syntax element should be shown, otherwise, text = title
                 if(params['sharpBefore']) { text = "# " + text } // if in params, add sharp before the title
                 if(params['titleAnchor']) { text = '<a href="#' + slugTitle + '">' + text + "</a>"} // if in params, add link to the anchor
                 let bal = params["shiftTitles"] ? '<h5 id="' + slugTitle + '">' : '<h4 id="' + slugTitle + '">' // if in params, h4 => h5
@@ -163,7 +163,7 @@ exports.render = (text, params = {},withSyntaxeElements = false) => { // transla
                 noP = true // headers should not be surronded by <p> tags
                 let title = RegExp.$1 // Get the title text
                 let slugTitle = this.slugify(title) // Get the title slug
-                let text = withSyntaxeElements ? "##### " + title : title // text = "## + title"  if syntax element should be shown, otherwise, text = title
+                let text = params["withSyntaxeElements"] ? "##### " + title : title // text = "## + title"  if syntax element should be shown, otherwise, text = title
                 if(params['sharpBefore']) { text = "# " + text } // if in params, add sharp before the title
                 if(params['titleAnchor']) { text = '<a href="#' + slugTitle + '">' + text + "</a>"} // if in params, add link to the anchor
                 let bal = params["shiftTitles"] ? '<h6 id="' + slugTitle + '">' : '<h5 id="' + slugTitle + '">' // if in params, h5 => h6
@@ -175,7 +175,7 @@ exports.render = (text, params = {},withSyntaxeElements = false) => { // transla
                 noP = true // headers should not be surronded by <p> tags
                 let title = RegExp.$1 // Get the title text
                 let slugTitle = this.slugify(title) // Get the title slug
-                let text = withSyntaxeElements ? "###### " + title : title // text = "## + title"  if syntax element should be shown, otherwise, text = title
+                let text = params["withSyntaxeElements"] ? "###### " + title : title // text = "## + title"  if syntax element should be shown, otherwise, text = title
                 if(params['sharpBefore']) { text = "# " + text } // if in params, add sharp before the title
                 if(params['titleAnchor']) { text = '<a href="#' + slugTitle + '">' + text + "</a>"} // if in params, add link to the anchor
                 let bal = '<h6 id="' + slugTitle + '">' // h6 => h6, so don't change
@@ -191,7 +191,7 @@ exports.render = (text, params = {},withSyntaxeElements = false) => { // transla
             let data = /!\[(.+?)\]\((.+?)\)/g.exec(found[i]) // actualize the regex (otherwise it keep the last matching word/sentence)
 
             let text = "" // text = the text in "alt" if withSyntaxElements is false, or the syntax element if is true
-            if(withSyntaxeElements) { // if syntaxe elements should be shown
+            if(params["withSyntaxeElements"]) { // if syntaxe elements should be shown
                 text = "![" + RegExp.$1 + '](<a href="' + htmlspecialchars(RegExp.$2) + '" target="_blank" rel="noopener, noreferrer">' + RegExp.$2 + "</a>)" // re-add the syntax elements
             }
             lines[line] = lines[line].replace("![" + RegExp.$1 +"](" + RegExp.$2 + ")", text + '<img src="' + htmlspecialchars(RegExp.$2) + '" alt="' + RegExp.$1 + '" />') // replace old word by the image element
@@ -206,7 +206,7 @@ exports.render = (text, params = {},withSyntaxeElements = false) => { // transla
             if(lines[line][lines[line].indexOf(found[i]) - 1] != "!") { // search the caractere juste before the "[title/desc](link)", if it's a !, it's an images
                 if(RegExp.$3 == "") { // if RegExp.$3 is empty, the "param" section is empty, so it's a link without additionnal param
                     let text = '<a href="' + htmlspecialchars(RegExp.$5) + '" rel="noopener, noreferrer">' + RegExp.$4 + "</a>" // text = the link
-                    if(withSyntaxeElements) { // if syntaxe elements should be shown
+                    if(params["withSyntaxeElements"]) { // if syntaxe elements should be shown
                         text = "[" + RegExp.$4 + '](<a href="' + htmlspecialchars(RegExp.$5) + '" rel="noopener, noreferrer">' + text + "</a>)" // text = the link with syntax element
                     }
                     lines[line] = lines[line].replace("[" + RegExp.$4 +"](" + RegExp.$5 + ")", text) // replace the old word/sentence by the link
@@ -214,14 +214,14 @@ exports.render = (text, params = {},withSyntaxeElements = false) => { // transla
                 else {
                     if(RegExp.$3 == "blank") { // if param is equal to "blank", add target="_blank" to the link
                         let text = '<a href="' + htmlspecialchars(RegExp.$2) + '" target="_blank" rel="noopener, noreferrer">' + RegExp.$1 + "</a>" // text = the link (with target="_blank")
-                        if(withSyntaxeElements) { // if syntaxe elements should be shown
+                        if(params["withSyntaxeElements"]) { // if syntaxe elements should be shown
                             text = "[" + RegExp.$1 + '](<a href="' + htmlspecialchars(RegExp.$2) + '" target="_blank" rel="noopener, noreferrer">' + RegExp.$1 + "</a>)(" + RegExp.$3 + ")" // text = the link with syntax element (with target="_blank")
                         }
                         lines[line] = lines[line].replace("[" + RegExp.$1 +"](" + RegExp.$2 + ")(" + RegExp.$3 + ")", text) // replace the old word/sentence by the link
                     }
                     else { // else, no param, same as normal link
                         let text = '<a href="' + htmlspecialchars(RegExp.$2) + '" rel="noopener, noreferrer">' + RegExp.$1 + "</a>"
-                        if(withSyntaxeElements) { 
+                        if(params["withSyntaxeElements"]) { 
                             text = "[" + RegExp.$1 + '](<a href="' + htmlspecialchars(RegExp.$2) + '" rel="noopener, noreferrer">' + RegExp.$1 + "</a>)(" + RegExp.$3 + ")"
                         }
                         lines[line] = lines[line].replace("[" + RegExp.$1 +"](" + RegExp.$2 + ")(" + RegExp.$3 + ")", text)

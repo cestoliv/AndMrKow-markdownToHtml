@@ -8,22 +8,20 @@ It's a simple tool to translate markdown into html.
 **andmrkow.node.js, to be used with node.js**
 
 ### Functions :
-**render(text, params = {}, withSyntaxeElements = false)** *translate markdown into html*
+**render(text, params = {})** *translate markdown into html*
 
 *examples :*
 
 `render("hello world! i'm using **AndMrKow!**")`
 return : `<p>hello world! i'm using <strong>AndMrKow!</strong><p>`
 
-`render("hello world! i'm using **AndMrKow!**", true)`
-return : `<p>hello world! i'm using <strong>**AndMrKow!**</strong></p>`
-
 #### Params :
 
     params = {
-        "shiftTitles": true // shift th titles : h1 became h2, h2 => h3... /!\ : h6 => h6
-        "sharpBefore": true // add a sharp before the title
-        "titleAnchor": true // title is a link with anchor
+        "shiftTitles": true, // shift th titles : h1 became h2, h2 => h3... /!\ : h6 => h6
+        "sharpBefore": true, // add a sharp before the title
+        "titleAnchor": true, // title is a link with anchor
+        "withSyntaxeElements": true, // show markdown syntax elements
     }
 
 
