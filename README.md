@@ -22,6 +22,8 @@ return : `<p>hello world! i'm using <strong>**AndMrKow!**</strong></p>`
 
     params = {
         "shiftTitles": true // shift th titles : h1 became h2, h2 => h3... /!\ : h6 => h6
+        "sharpBefore": true // add a sharp before the title
+        "titleAnchor": true // title is a link with anchor
     }
 
 
