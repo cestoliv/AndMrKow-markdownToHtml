@@ -16,7 +16,6 @@ exports.render = (text, params = {},withSyntaxeElements = false) => { // transla
         var regex, found // regex : contain the regex, found : contain results of regex match
 
         lines[line] = escapeChars(lines[line])
-        console.log(escapeChars(lines[line]))
     //COMMENT
         if(/^\/\/(.+)/.exec(lines[line])) { // if the current line start with a double slash
             if(!withSyntaxeElements) { // if syntaxe elements should not be shown, otherwise we do nothing (we keep the comment).
@@ -114,64 +113,74 @@ exports.render = (text, params = {},withSyntaxeElements = false) => { // transla
             /*h1*/
             if(/^# (.+)$/.exec(lines[line])) { // search if the current line start with "# "
                 noP = true // headers should not be surronded by <p> tags
-                let text = withSyntaxeElements ? "# " + RegExp.$1 : RegExp.$1 // text = "# + title"  if syntax element should be shown, otherwise, text = title
-                if(params["shiftTitles"]) { // h1 => h2
-                    lines[line] = lines[line].replace("# " + RegExp.$1, "<h2>" + text + "</h2>") // replace title in text by a title surronded by <h2> tags
-                }
-                else {
-                    lines[line] = lines[line].replace("# " + RegExp.$1, "<h1>" + text + "</h1>") // replace title in text by a title surronded by <h1> tags
-                }
+                let title = RegExp.$1 // Get the title text
+                let slugTitle = this.slugify(title) // Get the title slug
+                let text = withSyntaxeElements ? "# " + title : title // text = "## + title"  if syntax element should be shown, otherwise, text = title
+                if(params['sharpBefore']) { text = "# " + text } // if in params, add sharp before the title
+                if(params['titleAnchor']) { text = '<a href="#' + slugTitle + '">' + text + "</a>"} // if in params, add link to the anchor
+                let bal = params["shiftTitles"] ? '<h2 id="' + slugTitle + '">' : '<h1 id="' + slugTitle + '">' // if in params, h1 => h2
+                let endbal = params["shiftTitles"] ? '</h2>' : '</h1>' // if in params, h1 => h2
+                lines[line] = lines[line].replace("# " + title, bal + text + endbal) // replace title in text by a title surronded by bal, the start tag, and enbal, the end tag
             }
             /*h2*/
             if(/^## (.+)$/.exec(lines[line])) { // search if the current line start with "## "
                 noP = true // headers should not be surronded by <p> tags
-                let text = withSyntaxeElements ? "## " + RegExp.$1 : RegExp.$1 // text = "## + title"  if syntax element should be shown, otherwise, text = title
-                if(params["shiftTitles"]) { // h2 => h3
-                    lines[line] = lines[line].replace("## " + RegExp.$1, "<h3>" + text + "</h3>") // replace title in text by a title surronded by <h3> tags
-                }
-                else {
-                    lines[line] = lines[line].replace("## " + RegExp.$1, "<h2>" + text + "</h2>") // replace title in text by a title surronded by <h2> tags
-                }
+                let title = RegExp.$1 // Get the title text
+                let slugTitle = this.slugify(title) // Get the title slug
+                let text = withSyntaxeElements ? "## " + title : title // text = "## + title"  if syntax element should be shown, otherwise, text = title
+                if(params['sharpBefore']) { text = "# " + text } // if in params, add sharp before the title
+                if(params['titleAnchor']) { text = '<a href="#' + slugTitle + '">' + text + "</a>"} // if in params, add link to the anchor
+                let bal = params["shiftTitles"] ? '<h3 id="' + slugTitle + '">' : '<h2 id="' + slugTitle + '">' // if in params, h2 => h3
+                let endbal = params["shiftTitles"] ? '</h3>' : '</h2>' // if in params, h2 => h3
+                lines[line] = lines[line].replace("## " + title, bal + text + endbal) // replace title in text by a title surronded by bal, the start tag, and enbal, the end tag
             }
             /*h3*/
             if(/^### (.+)$/.exec(lines[line])) { // search if the current line start with "### "
                 noP = true // headers should not be surronded by <p> tags
-                let text = withSyntaxeElements ? "### " + RegExp.$1 : RegExp.$1 // text = "### + title"  if syntax element should be shown, otherwise, text = title
-                if(params["shiftTitles"]) { // h3 => h4
-                    lines[line] = lines[line].replace("### " + RegExp.$1, "<h4>" + text + "</h4>") // replace title in text by a title surronded by <h4> tags 
-                }
-                else {
-                    lines[line] = lines[line].replace("### " + RegExp.$1, "<h3>" + text + "</h3>") // replace title in text by a title surronded by <h3> tags 
-                }  
+                let title = RegExp.$1 // Get the title text
+                let slugTitle = this.slugify(title) // Get the title slug
+                let text = withSyntaxeElements ? "### " + title : title // text = "## + title"  if syntax element should be shown, otherwise, text = title
+                if(params['sharpBefore']) { text = "# " + text } // if in params, add sharp before the title
+                if(params['titleAnchor']) { text = '<a href="#' + slugTitle + '">' + text + "</a>"} // if in params, add link to the anchor
+                let bal = params["shiftTitles"] ? '<h4 id="' + slugTitle + '">' : '<h3 id="' + slugTitle + '">' // if in params, h3 => h4
+                let endbal = params["shiftTitles"] ? '</h4>' : '</h3>' // if in params, h3 => h4
+                lines[line] = lines[line].replace("### " + title, bal + text + endbal) // replace title in text by a title surronded by bal, the start tag, and enbal, the end tag
             }
             /*h4*/
             if(/^#### (.+)$/.exec(lines[line])) { // search if the current line start with "#### "
                 noP = true // headers should not be surronded by <p> tags
-                let text = withSyntaxeElements ? "#### " + RegExp.$1 : RegExp.$1 // text = "#### + title"  if syntax element should be shown, otherwise, text = title
-                if(params["shiftTitles"]) { // h4 => h5
-                    lines[line] = lines[line].replace("#### " + RegExp.$1, "<h5>" + text + "</h5>") // replace title in text by a title surronded by <h5> tags 
-                }
-                else {
-                    lines[line] = lines[line].replace("#### " + RegExp.$1, "<h4>" + text + "</h4>") // replace title in text by a title surronded by <h4> tags 
-                }  
+                let title = RegExp.$1 // Get the title text
+                let slugTitle = this.slugify(title) // Get the title slug
+                let text = withSyntaxeElements ? "#### " + title : title // text = "## + title"  if syntax element should be shown, otherwise, text = title
+                if(params['sharpBefore']) { text = "# " + text } // if in params, add sharp before the title
+                if(params['titleAnchor']) { text = '<a href="#' + slugTitle + '">' + text + "</a>"} // if in params, add link to the anchor
+                let bal = params["shiftTitles"] ? '<h5 id="' + slugTitle + '">' : '<h4 id="' + slugTitle + '">' // if in params, h4 => h5
+                let endbal = params["shiftTitles"] ? '</h5>' : '</h4>' // if in params, h4 => h5
+                lines[line] = lines[line].replace("#### " + title, bal + text + endbal) // replace title in text by a title surronded by bal, the start tag, and enbal, the end tag  
             }
             /*h5*/
             if(/^##### (.+)$/.exec(lines[line])) { // search if the current line start with "##### "
                 noP = true // headers should not be surronded by <p> tags
-                let text = withSyntaxeElements ? "##### " + RegExp.$1 : RegExp.$1 // text = "##### + title"  if syntax element should be shown, otherwise, text = title
-                if(params["shiftTitles"]) { // h5 => h6
-                    lines[line] = lines[line].replace("##### " + RegExp.$1, "<h6>" + text + "</h6>") // replace title in text by a title surronded by <h6> tags 
-                }
-                else {
-                    lines[line] = lines[line].replace("##### " + RegExp.$1, "<h5>" + text + "</h5>") // replace title in text by a title surronded by <h5> tags 
-                }
+                let title = RegExp.$1 // Get the title text
+                let slugTitle = this.slugify(title) // Get the title slug
+                let text = withSyntaxeElements ? "##### " + title : title // text = "## + title"  if syntax element should be shown, otherwise, text = title
+                if(params['sharpBefore']) { text = "# " + text } // if in params, add sharp before the title
+                if(params['titleAnchor']) { text = '<a href="#' + slugTitle + '">' + text + "</a>"} // if in params, add link to the anchor
+                let bal = params["shiftTitles"] ? '<h6 id="' + slugTitle + '">' : '<h5 id="' + slugTitle + '">' // if in params, h5 => h6
+                let endbal = params["shiftTitles"] ? '</h6>' : '</h5>' // if in params, h5 => h6
+                lines[line] = lines[line].replace("##### " + title, bal + text + endbal) // replace title in text by a title surronded by bal, the start tag, and enbal, the end tag  
             }
             /*h6*/
             if(/^###### (.+)$/.exec(lines[line])) { // search if the current line start with "###### "
                 noP = true // headers should not be surronded by <p> tags
-                let text = withSyntaxeElements ? "###### " + RegExp.$1 : RegExp.$1 // text = "###### + title"  if syntax element should be shown, otherwise, text = title
-                // if(params["shiftTitles"]) h5 => h6, so don't change
-                lines[line] = lines[line].replace("###### " + RegExp.$1, "<h6>" + text + "</h6>") // replace title in text by a title surronded by <h6> tags
+                let title = RegExp.$1 // Get the title text
+                let slugTitle = this.slugify(title) // Get the title slug
+                let text = withSyntaxeElements ? "###### " + title : title // text = "## + title"  if syntax element should be shown, otherwise, text = title
+                if(params['sharpBefore']) { text = "# " + text } // if in params, add sharp before the title
+                if(params['titleAnchor']) { text = '<a href="#' + slugTitle + '">' + text + "</a>"} // if in params, add link to the anchor
+                let bal = '<h6 id="' + slugTitle + '">' // h6 => h6, so don't change
+                let endbal = '</h6>' // h6 => h6, so don't change
+                lines[line] = lines[line].replace("###### " + title, bal + text + endbal) // replace title in text by a title surronded by bal, the start tag, and enbal, the end tag  
             } 
         }
 
@@ -208,8 +217,6 @@ exports.render = (text, params = {},withSyntaxeElements = false) => { // transla
                         if(withSyntaxeElements) { // if syntaxe elements should be shown
                             text = "[" + RegExp.$1 + '](<a href="' + htmlspecialchars(RegExp.$2) + '" target="_blank" rel="noopener, noreferrer">' + RegExp.$1 + "</a>)(" + RegExp.$3 + ")" // text = the link with syntax element (with target="_blank")
                         }
-                        console.log(" = " + "[" + RegExp.$1 +"](" + RegExp.$2 + ")(" + RegExp.$3 + ")")
-                        console.log(lines[line].replace("[" + RegExp.$1 +"](" + RegExp.$2 + ")(" + RegExp.$3 + ")", text))
                         lines[line] = lines[line].replace("[" + RegExp.$1 +"](" + RegExp.$2 + ")(" + RegExp.$3 + ")", text) // replace the old word/sentence by the link
                     }
                     else { // else, no param, same as normal link
@@ -249,6 +256,29 @@ exports.without = (markdown, lenght = "all") => {
     return res
 }
 
+slugify = (text) => {
+    text = text.toLowerCase()
+    text = text.replace(/ /g, "-")
+
+    text = text.replace(/&/g, "");
+    text = text.replace(/"/g, "");
+    text = text.replace(/'/g, "");
+    text = text.replace(/</g, "");
+    text = text.replace(/>/g, "");
+    text = text.replace(/\*/g, "");
+    text = text.replace(/;/g, "")
+    text = text.replace(/\//g, "")
+    text = text.replace(/\?/g, "")
+    text = text.replace(/:/g, "")
+    text = text.replace(/@/g, "a")
+    text = text.replace(/=/g, "")
+    text = text.replace(/è/g, "e")
+    text = text.replace(/é/g, "e")
+    text = text.replace(/#/g, "")
+    
+    return text
+}
+
 htmlspecialchars = (str) => {
     if (typeof(str) == "string") {
         str = str.replace(/&/g, "&amp;");
@@ -260,17 +290,6 @@ htmlspecialchars = (str) => {
         str = str.replace(/_/g, "%5F");
     }
     return str;
-
-    str = str.replace(/;/g, "%3B")
-    str = str.replace(/\//g, "%2F")
-    str = str.replace(/\?/g, "%3F")
-    str = str.replace(/:/g, "%3A")
-    str = str.replace(/@/g, "%40")
-    str = str.replace(/=/g, "%3D")
-    str = str.replace(/&/g, "%26")
-    str = str.replace(/è/g, "%C3%A8")
-    str = str.replace(/é/g, "%C3%A9")
-    str = str.replace(/#/g, "%23")
 }
 
 escapeChars = (line) => {
