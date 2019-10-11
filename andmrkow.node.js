@@ -116,7 +116,7 @@ exports.render = (text, params = {}) => { // translate markdown into html
                 let title = RegExp.$1 // Get the title text
                 let slugTitle = this.slugify(title) // Get the title slug
                 let text = params["withSyntaxeElements"] ? "# " + title : title // text = "## + title"  if syntax element should be shown, otherwise, text = title
-                if(params['sharpBefore']) { text = "# " + text } // if in params, add sharp before the title
+                if(params['sharpBefore'] && !params['withSyntaxeElements']) { text = "# " + text } // if in params, add sharp before the title
                 if(params['titleAnchor']) { text = '<a href="#' + slugTitle + '">' + text + "</a>"} // if in params, add link to the anchor
                 let bal = params["shiftTitles"] ? '<h2 id="' + slugTitle + '">' : '<h1 id="' + slugTitle + '">' // if in params, h1 => h2
                 let endbal = params["shiftTitles"] ? '</h2>' : '</h1>' // if in params, h1 => h2
@@ -128,7 +128,7 @@ exports.render = (text, params = {}) => { // translate markdown into html
                 let title = RegExp.$1 // Get the title text
                 let slugTitle = this.slugify(title) // Get the title slug
                 let text = params["withSyntaxeElements"] ? "## " + title : title // text = "## + title"  if syntax element should be shown, otherwise, text = title
-                if(params['sharpBefore']) { text = "# " + text } // if in params, add sharp before the title
+                if(params['sharpBefore'] && !params['withSyntaxeElements']) { text = "# " + text } // if in params, add sharp before the title
                 if(params['titleAnchor']) { text = '<a href="#' + slugTitle + '">' + text + "</a>"} // if in params, add link to the anchor
                 let bal = params["shiftTitles"] ? '<h3 id="' + slugTitle + '">' : '<h2 id="' + slugTitle + '">' // if in params, h2 => h3
                 let endbal = params["shiftTitles"] ? '</h3>' : '</h2>' // if in params, h2 => h3
@@ -140,7 +140,7 @@ exports.render = (text, params = {}) => { // translate markdown into html
                 let title = RegExp.$1 // Get the title text
                 let slugTitle = this.slugify(title) // Get the title slug
                 let text = params["withSyntaxeElements"] ? "### " + title : title // text = "## + title"  if syntax element should be shown, otherwise, text = title
-                if(params['sharpBefore']) { text = "# " + text } // if in params, add sharp before the title
+                if(params['sharpBefore'] && !params['withSyntaxeElements']) { text = "# " + text } // if in params, add sharp before the title
                 if(params['titleAnchor']) { text = '<a href="#' + slugTitle + '">' + text + "</a>"} // if in params, add link to the anchor
                 let bal = params["shiftTitles"] ? '<h4 id="' + slugTitle + '">' : '<h3 id="' + slugTitle + '">' // if in params, h3 => h4
                 let endbal = params["shiftTitles"] ? '</h4>' : '</h3>' // if in params, h3 => h4
@@ -152,7 +152,7 @@ exports.render = (text, params = {}) => { // translate markdown into html
                 let title = RegExp.$1 // Get the title text
                 let slugTitle = this.slugify(title) // Get the title slug
                 let text = params["withSyntaxeElements"] ? "#### " + title : title // text = "## + title"  if syntax element should be shown, otherwise, text = title
-                if(params['sharpBefore']) { text = "# " + text } // if in params, add sharp before the title
+                if(params['sharpBefore'] && !params['withSyntaxeElements']) { text = "# " + text } // if in params, add sharp before the title
                 if(params['titleAnchor']) { text = '<a href="#' + slugTitle + '">' + text + "</a>"} // if in params, add link to the anchor
                 let bal = params["shiftTitles"] ? '<h5 id="' + slugTitle + '">' : '<h4 id="' + slugTitle + '">' // if in params, h4 => h5
                 let endbal = params["shiftTitles"] ? '</h5>' : '</h4>' // if in params, h4 => h5
@@ -164,7 +164,7 @@ exports.render = (text, params = {}) => { // translate markdown into html
                 let title = RegExp.$1 // Get the title text
                 let slugTitle = this.slugify(title) // Get the title slug
                 let text = params["withSyntaxeElements"] ? "##### " + title : title // text = "## + title"  if syntax element should be shown, otherwise, text = title
-                if(params['sharpBefore']) { text = "# " + text } // if in params, add sharp before the title
+                if(params['sharpBefore'] && !params['withSyntaxeElements']) { text = "# " + text } // if in params, add sharp before the title
                 if(params['titleAnchor']) { text = '<a href="#' + slugTitle + '">' + text + "</a>"} // if in params, add link to the anchor
                 let bal = params["shiftTitles"] ? '<h6 id="' + slugTitle + '">' : '<h5 id="' + slugTitle + '">' // if in params, h5 => h6
                 let endbal = params["shiftTitles"] ? '</h6>' : '</h5>' // if in params, h5 => h6
@@ -176,7 +176,7 @@ exports.render = (text, params = {}) => { // translate markdown into html
                 let title = RegExp.$1 // Get the title text
                 let slugTitle = this.slugify(title) // Get the title slug
                 let text = params["withSyntaxeElements"] ? "###### " + title : title // text = "## + title"  if syntax element should be shown, otherwise, text = title
-                if(params['sharpBefore']) { text = "# " + text } // if in params, add sharp before the title
+                if(params['sharpBefore'] && !params['withSyntaxeElements']) { text = "# " + text } // if in params, add sharp before the title
                 if(params['titleAnchor']) { text = '<a href="#' + slugTitle + '">' + text + "</a>"} // if in params, add link to the anchor
                 let bal = '<h6 id="' + slugTitle + '">' // h6 => h6, so don't change
                 let endbal = '</h6>' // h6 => h6, so don't change
