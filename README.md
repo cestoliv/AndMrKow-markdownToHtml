@@ -36,6 +36,12 @@ return : `hello world! i'm using AndMrKow!`
 `without("hello world! i'm using **AndMrKow!**", 10)`
 return : `hello worl`
 
+**slugify = (text)** *slugify a string*
+*examples :*
+
+`slugify("Titre de niveau 1")`
+return : `titre-de-niveau-1`
+
 ## SUPPORTS
 ### Headers
 Use 1-6 hash characters at the start of the line, corresponding to header levels 1-6.
