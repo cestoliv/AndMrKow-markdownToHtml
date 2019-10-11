@@ -256,27 +256,27 @@ without = (markdown, lenght = "all") => {
     return res
 }
 
-slugify = (text) => {
-    text = text.toLowerCase()
-    text = text.replace(/ /g, "-")
+slugify = (str) => {
+    str = str.replace(/^\s+|\s+$/g, '');
 
-    text = text.replace(/&/g, "");
-    text = text.replace(/"/g, "");
-    text = text.replace(/'/g, "");
-    text = text.replace(/</g, "");
-    text = text.replace(/>/g, "");
-    text = text.replace(/\*/g, "");
-    text = text.replace(/;/g, "")
-    text = text.replace(/\//g, "")
-    text = text.replace(/\?/g, "")
-    text = text.replace(/:/g, "")
-    text = text.replace(/@/g, "a")
-    text = text.replace(/=/g, "")
-    text = text.replace(/è/g, "e")
-    text = text.replace(/é/g, "e")
-    text = text.replace(/#/g, "")
-    
-    return text
+    // Make the string lowercase
+    str = str.toLowerCase();
+
+    // Remove accents, swap ñ for n, etc
+    var from = "ÁÄÂÀÃÅČÇĆĎÉĚËÈÊẼĔȆÍÌÎÏŇÑÓÖÒÔÕØŘŔŠŤÚŮÜÙÛÝŸŽáäâàãåčçćďéěëèêẽĕȇíìîïňñóöòôõøðřŕšťúůüùûýÿžþÞĐđßÆa·/_,:;";
+    var to   = "AAAAAACCCDEEEEEEEEIIIINNOOOOOORRSTUUUUUYYZaaaaaacccdeeeeeeeeiiiinnooooooorrstuuuuuyyzbBDdBAa------";
+    for (var i=0, l=from.length ; i<l ; i++) {
+        str = str.replace(new RegExp(from.charAt(i), 'g'), to.charAt(i));
+    }
+
+    // Remove invalid chars
+    str = str.replace(/[^a-z0-9 -]/g, '') 
+    // Collapse whitespace and replace by -
+    .replace(/\s+/g, '-') 
+    // Collapse dashes
+    .replace(/-+/g, '-'); 
+
+    return str;
 }
 
 htmlspecialchars = (str) => {
