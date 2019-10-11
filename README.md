@@ -24,7 +24,7 @@ return : `<p>hello world! i'm using <strong>AndMrKow!</strong><p>`
         "withSyntaxeElements": true, // show markdown syntax elements
     }
 
-**/!\\** If withSyntaxEElements = true, there will be no sharp before
+**/!\\** If withSyntaxeElements = true, there will be no sharp before
 
 
 **whitout = (text, lenght = "all")** *remove markdown syntax elements*
