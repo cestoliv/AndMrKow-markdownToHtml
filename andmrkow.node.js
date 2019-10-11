@@ -256,7 +256,7 @@ exports.without = (markdown, lenght = "all") => {
     return res
 }
 
-slugify = (str) => {
+exports.slugify = (str) => {
     str = str.replace(/^\s+|\s+$/g, '');
 
     // Make the string lowercase
