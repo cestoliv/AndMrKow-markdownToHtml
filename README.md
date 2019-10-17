@@ -1,5 +1,5 @@
 # AndMrKow-markdownToHtml
-(**AndMrKow** is an anagram of **makdown**)
+(**AndMrKow** is an anagram of **markdown**)
 
 It's a simple tool to translate markdown into html.
 
@@ -22,6 +22,8 @@ return : `<p>hello world! i'm using <strong>AndMrKow!</strong><p>`
         "sharpBefore": true, // add a sharp before the title
         "titleAnchor": true, // title is a link with anchor
         "withSyntaxeElements": true, // show markdown syntax elements
+        "noImages": true, // replace images by the text "Images are not allowed..."
+        "noTitles": true, // replace titles by a <strong> text
     }
 
 **/!\\** If withSyntaxeElements = true, there will be no sharp before

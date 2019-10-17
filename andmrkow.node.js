@@ -120,6 +120,10 @@ exports.render = (text, params = {}) => { // translate markdown into html
                 if(params['titleAnchor']) { text = '<a href="#' + slugTitle + '">' + text + "</a>"} // if in params, add link to the anchor
                 let bal = params["shiftTitles"] ? '<h2 id="' + slugTitle + '">' : '<h1 id="' + slugTitle + '">' // if in params, h1 => h2
                 let endbal = params["shiftTitles"] ? '</h2>' : '</h1>' // if in params, h1 => h2
+                if(params["noTitles"]) { // if noTitles
+                    bal = '<p><strong>' // p, because noTitles
+                    endbal = '</strong></p>' // p, because noTitles
+                }
                 lines[line] = lines[line].replace("# " + title, bal + text + endbal) // replace title in text by a title surronded by bal, the start tag, and enbal, the end tag
             }
             /*h2*/
@@ -132,6 +136,10 @@ exports.render = (text, params = {}) => { // translate markdown into html
                 if(params['titleAnchor']) { text = '<a href="#' + slugTitle + '">' + text + "</a>"} // if in params, add link to the anchor
                 let bal = params["shiftTitles"] ? '<h3 id="' + slugTitle + '">' : '<h2 id="' + slugTitle + '">' // if in params, h2 => h3
                 let endbal = params["shiftTitles"] ? '</h3>' : '</h2>' // if in params, h2 => h3
+                if(params["noTitles"]) { // if noTitles
+                    bal = '<p><strong>' // p, because noTitles
+                    endbal = '</strong></p>' // p, because noTitles
+                }
                 lines[line] = lines[line].replace("## " + title, bal + text + endbal) // replace title in text by a title surronded by bal, the start tag, and enbal, the end tag
             }
             /*h3*/
@@ -144,6 +152,10 @@ exports.render = (text, params = {}) => { // translate markdown into html
                 if(params['titleAnchor']) { text = '<a href="#' + slugTitle + '">' + text + "</a>"} // if in params, add link to the anchor
                 let bal = params["shiftTitles"] ? '<h4 id="' + slugTitle + '">' : '<h3 id="' + slugTitle + '">' // if in params, h3 => h4
                 let endbal = params["shiftTitles"] ? '</h4>' : '</h3>' // if in params, h3 => h4
+                if(params["noTitles"]) { // if noTitles
+                    bal = '<p><strong>' // p, because noTitles
+                    endbal = '</strong></p>' // p, because noTitles
+                }
                 lines[line] = lines[line].replace("### " + title, bal + text + endbal) // replace title in text by a title surronded by bal, the start tag, and enbal, the end tag
             }
             /*h4*/
@@ -156,6 +168,10 @@ exports.render = (text, params = {}) => { // translate markdown into html
                 if(params['titleAnchor']) { text = '<a href="#' + slugTitle + '">' + text + "</a>"} // if in params, add link to the anchor
                 let bal = params["shiftTitles"] ? '<h5 id="' + slugTitle + '">' : '<h4 id="' + slugTitle + '">' // if in params, h4 => h5
                 let endbal = params["shiftTitles"] ? '</h5>' : '</h4>' // if in params, h4 => h5
+                if(params["noTitles"]) { // if noTitles
+                    bal = '<p><strong>' // p, because noTitles
+                    endbal = '</strong></p>' // p, because noTitles
+                }
                 lines[line] = lines[line].replace("#### " + title, bal + text + endbal) // replace title in text by a title surronded by bal, the start tag, and enbal, the end tag  
             }
             /*h5*/
@@ -168,6 +184,10 @@ exports.render = (text, params = {}) => { // translate markdown into html
                 if(params['titleAnchor']) { text = '<a href="#' + slugTitle + '">' + text + "</a>"} // if in params, add link to the anchor
                 let bal = params["shiftTitles"] ? '<h6 id="' + slugTitle + '">' : '<h5 id="' + slugTitle + '">' // if in params, h5 => h6
                 let endbal = params["shiftTitles"] ? '</h6>' : '</h5>' // if in params, h5 => h6
+                if(params["noTitles"]) { // if noTitles
+                    bal = '<p><strong>' // p, because noTitles
+                    endbal = '</strong></p>' // p, because noTitles
+                }
                 lines[line] = lines[line].replace("##### " + title, bal + text + endbal) // replace title in text by a title surronded by bal, the start tag, and enbal, the end tag  
             }
             /*h6*/
@@ -180,6 +200,10 @@ exports.render = (text, params = {}) => { // translate markdown into html
                 if(params['titleAnchor']) { text = '<a href="#' + slugTitle + '">' + text + "</a>"} // if in params, add link to the anchor
                 let bal = '<h6 id="' + slugTitle + '">' // h6 => h6, so don't change
                 let endbal = '</h6>' // h6 => h6, so don't change
+                if(params["noTitles"]) { // if noTitles
+                    bal = '<p><strong>' // p, because noTitles
+                    endbal = '</strong></p>' // p, because noTitles
+                }
                 lines[line] = lines[line].replace("###### " + title, bal + text + endbal) // replace title in text by a title surronded by bal, the start tag, and enbal, the end tag  
             } 
         }
@@ -190,11 +214,16 @@ exports.render = (text, params = {}) => { // translate markdown into html
         for(i in found) { // read found array
             let data = /!\[(.+?)\]\((.+?)\)/g.exec(found[i]) // actualize the regex (otherwise it keep the last matching word/sentence)
 
-            let text = "" // text = the text in "alt" if withSyntaxElements is false, or the syntax element if is true
-            if(params["withSyntaxeElements"]) { // if syntaxe elements should be shown
-                text = "![" + RegExp.$1 + '](<a href="' + htmlspecialchars(RegExp.$2) + '" target="_blank" rel="noopener, noreferrer">' + RegExp.$2 + "</a>)" // re-add the syntax elements
+            if(params['noImages']) { // if noImages
+                lines[line] = lines[line].replace("![" + RegExp.$1 +"](" + RegExp.$2 + ")", '<strong>Images are not allowed...</strong>') // replace old word by the image element
+            } 
+            else { // if images allowed
+                let text = "" // text = the text in "alt" if withSyntaxElements is false, or the syntax element if is true
+                if(params["withSyntaxeElements"]) { // if syntaxe elements should be shown
+                    text = "![" + RegExp.$1 + '](<a href="' + htmlspecialchars(RegExp.$2) + '" target="_blank" rel="noopener, noreferrer">' + RegExp.$2 + "</a>)" // re-add the syntax elements
+                }
+                lines[line] = lines[line].replace("![" + RegExp.$1 +"](" + RegExp.$2 + ")", text + '<img src="' + htmlspecialchars(RegExp.$2) + '" alt="' + RegExp.$1 + '" />') // replace old word by the image element
             }
-            lines[line] = lines[line].replace("![" + RegExp.$1 +"](" + RegExp.$2 + ")", text + '<img src="' + htmlspecialchars(RegExp.$2) + '" alt="' + RegExp.$1 + '" />') // replace old word by the image element
         }
 
     //LINK
@@ -277,6 +306,114 @@ exports.slugify = (str) => {
     .replace(/-+/g, '-'); 
 
     return str;
+}
+
+fromHtml = (html) => {
+    html = splitHtml(html)
+
+    for(let i = 0; i < html.length; i++) {
+        html[i] = htmlLinkToMarkdown(html[i])
+        html[i] = htmlImgToMarkdown(html[i])
+
+        if(html[i].startsWith("<h")) {
+            if(html[i].startsWith("<h1")) {
+                html[i] = "# " + html[i].replace(/<h1.*?>/, "").replace("</h1>", "")
+            }
+            else if(html[i].startsWith("<h2")) {
+                html[i] = "## " + html[i].replace(/<h2.*?>/, "").replace("</h2>", "")
+            }
+            else if(html[i].startsWith("<h3")) {
+                html[i] = "### " + html[i].replace(/<h3.*?>/, "").replace("</h3>", "")
+            }
+            else if(html[i].startsWith("<h4")) {
+                html[i] = "#### " + html[i].replace(/<h4.*?>/, "").replace("</h4>", "")
+            }
+            else if(html[i].startsWith("<h5")) {
+                html[i] = "##### " + html[i].replace(/<h5.*?>/, "").replace("</h5>", "")
+            }
+            else {
+                html[i] = "###### " + html[i].replace(/<h.*?>/, "").replace("</h6>", "")
+            }
+        }
+        else if(html[i].startsWith("<p")) {
+            html[i] = html[i].replace(/<p.*?>/, "").replace("</p>", "")
+
+            while(html[i].match(/<strong.*?>(.*?)<\/strong>/)) {
+                html[i] = html[i].replace(new RegExp("<strong.*?>" + RegExp.$1 + "</strong>"), '**' + RegExp.$1 + "**")
+            }
+
+            while(html[i].match(/<em.*?>(.*?)<\/em>/)) {
+                html[i] = html[i].replace(new RegExp("<em.*?>" + RegExp.$1 + "</em>"), '*' + RegExp.$1 + "*")
+            }
+        }
+
+        html[i] += "\n"
+    }
+
+    html = html.join("<br />")
+
+    return html
+}
+
+htmlLinkToMarkdown = (html) => {
+    while(html.match(/<a.*?>(.*?)<\/a>/)) {
+        text = RegExp.$1
+        href = ""
+        target = ""
+        rel = ""
+        if(html.match(/<a.*?href="(.*?)".*?>(.*?)<\/a>/)) {
+            href = RegExp.$1
+        }
+        if(html.match(/<a.*?target="(.*?)".*?>(.*?)<\/a>/)) {
+            target = RegExp.$1
+            if(target == "_blank") {
+                target = "blank"
+            }
+        }
+        if(html.match(/<a.*?rel="(.*?)".*?>(.*?)<\/a>/)) {
+            rel = RegExp.$1
+        }
+
+        html = html.replace(/<a.*?>(.*?)<\/a>/, "[" + text + "](" + href + ")" + "(" + target + ", " + rel + ")")
+    }
+
+    return html
+}
+
+htmlImgToMarkdown = (html) => {
+    while(html.match(/<img.*?>/)) {
+        alt = ""
+        src = ""
+        if(html.match(/<img.*?alt="(.*?)".*?>/)) {
+            alt = RegExp.$1
+        }
+        if(html.match(/<img.*?src="(.*?)".*?>/)) {
+            src = RegExp.$1
+        }
+
+        html = html.replace(/<img.*?>/, "![" + alt + "](" + src + ")")
+    }
+
+    return html
+}
+
+splitHtml = (html) => {
+    html = html.replace(/<br>/g, "")
+    html = html.replace(/<br\/>/g, "")
+    html = html.replace(/<br \/>/g, "")
+    html = html.split(/<\/h.>|<\/p>/)
+    
+    for(let i = 0; i < html.length; i++) {
+        if(html[i].startsWith("<h")) {
+            html[i].match(/<h(.).*?>/)
+            html[i] = html[i] + "</h" + RegExp.$1 + ">"
+        }
+        else if(html[i].startsWith("<p")) {
+            html[i] = html[i] + "</p>"
+        }
+    }
+
+    return html
 }
 
 htmlspecialchars = (str) => {
