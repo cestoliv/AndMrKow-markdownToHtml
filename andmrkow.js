@@ -116,170 +116,135 @@ render = (text, params = {}) => { // translate markdown into html
                 lines[line] = lines[line].replace("_" + RegExp.$1 + "_", "<em>" + text + "</em>") // replace old word by the text surronded by <em> tags
             }
         //HEADERS
+            let title = false
+            let hN = 0
             /*h1*/
             if(/^# (.+)$/.exec(lines[line])) { // search if the current line start with "# "
-                noP = true // headers should not be surronded by <p> tags
-                let title = RegExp.$1 // Get the title text
-                let slugTitle = slugify(title) // Get the title slug
-                let text = params["withSyntaxeElements"] ? "# " + title : title // text = "## + title"  if syntax element should be shown, otherwise, text = title
-                if(params['sharpBefore'] && !params['withSyntaxeElements']) { text = "# " + text } // if in params, add sharp before the title
-                if(params['titleAnchor']) { text = '<a href="#' + slugTitle + '">' + text + "</a>"} // if in params, add link to the anchor
-                let bal = params["shiftTitles"] ? '<h2 id="' + slugTitle + '">' : '<h1 id="' + slugTitle + '">' // if in params, h1 => h2
-                let endbal = params["shiftTitles"] ? '</h2>' : '</h1>' // if in params, h1 => h2
-                if(params["noTitles"]) { // if noTitles
-                    bal = '<p><strong>' // p, because noTitles
-                    endbal = '</strong></p>' // p, because noTitles
-                }
-                lines[line] = lines[line].replace("# " + title, bal + text + endbal) // replace title in text by a title surronded by bal, the start tag, and enbal, the end tag
+                title = true
+                hN = 1
             }
             /*h2*/
             if(/^## (.+)$/.exec(lines[line])) { // search if the current line start with "## "
-                noP = true // headers should not be surronded by <p> tags
-                let title = RegExp.$1 // Get the title text
-                let slugTitle = slugify(title) // Get the title slug
-                let text = params["withSyntaxeElements"] ? "## " + title : title // text = "## + title"  if syntax element should be shown, otherwise, text = title
-                if(params['sharpBefore'] && !params['withSyntaxeElements']) { text = "# " + text } // if in params, add sharp before the title
-                if(params['titleAnchor']) { text = '<a href="#' + slugTitle + '">' + text + "</a>"} // if in params, add link to the anchor
-                let bal = params["shiftTitles"] ? '<h3 id="' + slugTitle + '">' : '<h2 id="' + slugTitle + '">' // if in params, h2 => h3
-                let endbal = params["shiftTitles"] ? '</h3>' : '</h2>' // if in params, h2 => h3
-                if(params["noTitles"]) { // if noTitles
-                    bal = '<p><strong>' // p, because noTitles
-                    endbal = '</strong></p>' // p, because noTitles
-                }
-                lines[line] = lines[line].replace("## " + title, bal + text + endbal) // replace title in text by a title surronded by bal, the start tag, and enbal, the end tag
+                title = true
+                hN = 2
             }
             /*h3*/
             if(/^### (.+)$/.exec(lines[line])) { // search if the current line start with "### "
-                noP = true // headers should not be surronded by <p> tags
-                let title = RegExp.$1 // Get the title text
-                let slugTitle = slugify(title) // Get the title slug
-                let text = params["withSyntaxeElements"] ? "### " + title : title // text = "## + title"  if syntax element should be shown, otherwise, text = title
-                if(params['sharpBefore'] && !params['withSyntaxeElements']) { text = "# " + text } // if in params, add sharp before the title
-                if(params['titleAnchor']) { text = '<a href="#' + slugTitle + '">' + text + "</a>"} // if in params, add link to the anchor
-                let bal = params["shiftTitles"] ? '<h4 id="' + slugTitle + '">' : '<h3 id="' + slugTitle + '">' // if in params, h3 => h4
-                let endbal = params["shiftTitles"] ? '</h4>' : '</h3>' // if in params, h3 => h4
-                if(params["noTitles"]) { // if noTitles
-                    bal = '<p><strong>' // p, because noTitles
-                    endbal = '</strong></p>' // p, because noTitles
-                }
-                lines[line] = lines[line].replace("### " + title, bal + text + endbal) // replace title in text by a title surronded by bal, the start tag, and enbal, the end tag
+                title = true
+                hN = 3
             }
             /*h4*/
             if(/^#### (.+)$/.exec(lines[line])) { // search if the current line start with "#### "
-                noP = true // headers should not be surronded by <p> tags
-                let title = RegExp.$1 // Get the title text
-                let slugTitle = slugify(title) // Get the title slug
-                let text = params["withSyntaxeElements"] ? "#### " + title : title // text = "## + title"  if syntax element should be shown, otherwise, text = title
-                if(params['sharpBefore'] && !params['withSyntaxeElements']) { text = "# " + text } // if in params, add sharp before the title
-                if(params['titleAnchor']) { text = '<a href="#' + slugTitle + '">' + text + "</a>"} // if in params, add link to the anchor
-                let bal = params["shiftTitles"] ? '<h5 id="' + slugTitle + '">' : '<h4 id="' + slugTitle + '">' // if in params, h4 => h5
-                let endbal = params["shiftTitles"] ? '</h5>' : '</h4>' // if in params, h4 => h5
-                if(params["noTitles"]) { // if noTitles
-                    bal = '<p><strong>' // p, because noTitles
-                    endbal = '</strong></p>' // p, because noTitles
-                }
-                lines[line] = lines[line].replace("#### " + title, bal + text + endbal) // replace title in text by a title surronded by bal, the start tag, and enbal, the end tag  
+                title = true
+                hN = 4  
             }
             /*h5*/
             if(/^##### (.+)$/.exec(lines[line])) { // search if the current line start with "##### "
-                noP = true // headers should not be surronded by <p> tags
-                let title = RegExp.$1 // Get the title text
-                let slugTitle = slugify(title) // Get the title slug
-                let text = params["withSyntaxeElements"] ? "##### " + title : title // text = "## + title"  if syntax element should be shown, otherwise, text = title
-                if(params['sharpBefore'] && !params['withSyntaxeElements']) { text = "# " + text } // if in params, add sharp before the title
-                if(params['titleAnchor']) { text = '<a href="#' + slugTitle + '">' + text + "</a>"} // if in params, add link to the anchor
-                let bal = params["shiftTitles"] ? '<h6 id="' + slugTitle + '">' : '<h5 id="' + slugTitle + '">' // if in params, h5 => h6
-                let endbal = params["shiftTitles"] ? '</h6>' : '</h5>' // if in params, h5 => h6
-                if(params["noTitles"]) { // if noTitles
-                    bal = '<p><strong>' // p, because noTitles
-                    endbal = '</strong></p>' // p, because noTitles
-                }
-                lines[line] = lines[line].replace("##### " + title, bal + text + endbal) // replace title in text by a title surronded by bal, the start tag, and enbal, the end tag  
+                title = true
+                hN = 5  
             }
             /*h6*/
             if(/^###### (.+)$/.exec(lines[line])) { // search if the current line start with "###### "
+                title = true
+                hN = 6  
+            } 
+
+            if(title) {
                 noP = true // headers should not be surronded by <p> tags
                 let title = RegExp.$1 // Get the title text
-                let slugTitle = slugify(title) // Get the title slug
-                let text = params["withSyntaxeElements"] ? "###### " + title : title // text = "## + title"  if syntax element should be shown, otherwise, text = title
-                if(params['sharpBefore'] && !params['withSyntaxeElements']) { text = "# " + text } // if in params, add sharp before the title
+                let slugTitle = this.slugify(title) // Get the title slug
+                let text = params["withSyntaxeElements"] ? "#".repeat(hN) + " " + title : title // text = "## + title"  if syntax element should be shown, otherwise, text = title
+                
+                if(params['sharpBefore'] && !params['withSyntaxeElements']) { text = "#"*hN + " " + text } // if in params, add sharp before the title
                 if(params['titleAnchor']) { text = '<a href="#' + slugTitle + '">' + text + "</a>"} // if in params, add link to the anchor
-                let bal = '<h6 id="' + slugTitle + '">' // h6 => h6, so don't change
-                let endbal = '</h6>' // h6 => h6, so don't change
+
+                let hNb = hN.toString() // number for the title tag (<hX>)
+                if(params["shiftTitles"]) { // if shiftTitles
+                    let hNbt = hN + 1  // hN + 1 in a temp var
+                    if(hNbt > 6) { // if bigger than 6
+                        hNb = "6" // = 6 because if shift <h6> => <h6>
+                    }
+                    else {
+                        hNb = hNbt.toString() // else, hN = hN + 1 toString
+                    }
+                }
+                let bal = '<h' + hNb + ' id="' + slugTitle + '">' // start tag of the titles
+                let endbal = '</h' + hNb + '>' // end tag of th title
                 if(params["noTitles"]) { // if noTitles
                     bal = '<p><strong>' // p, because noTitles
                     endbal = '</strong></p>' // p, because noTitles
                 }
-                lines[line] = lines[line].replace("###### " + title, bal + text + endbal) // replace title in text by a title surronded by bal, the start tag, and enbal, the end tag  
-            } 
-        }
-
-    //IMAGES
-        regex = /!\[(.+?)\]\((.+?)\)/g // search if word/sentence respects the pattern ![title/desc](link)
-        found = lines[line].match(regex) // put matching word/sentence of th current line in the found array
-        for(i in found) { // read found array
-            let data = /!\[(.+?)\]\((.+?)\)/g.exec(found[i]) // actualize the regex (otherwise it keep the last matching word/sentence)
-
-            if(params['noImages']) { // if noImages
-                lines[line] = lines[line].replace("![" + RegExp.$1 +"](" + RegExp.$2 + ")", '<strong>Images are not allowed...</strong>') // replace old word by the image element
-            } 
-            else { // if images allowed
-                let text = "" // text = the text in "alt" if withSyntaxElements is false, or the syntax element if is true
-                if(params["withSyntaxeElements"]) { // if syntaxe elements should be shown
-                    text = "![" + RegExp.$1 + '](<a href="' + htmlspecialchars(RegExp.$2) + '" target="_blank" rel="noopener, noreferrer">' + RegExp.$2 + "</a>)" // re-add the syntax elements
-                }
-                lines[line] = lines[line].replace("![" + RegExp.$1 +"](" + RegExp.$2 + ")", text + '<img src="' + htmlspecialchars(RegExp.$2) + '" alt="' + RegExp.$1 + '" />') // replace old word by the image element
+                lines[line] = lines[line].replace(("#".repeat(hN) + " ") + title, bal + text + endbal) // replace title in text by a title surronded by bal, the start tag, and enbal, the end tag
             }
-        }
+        
 
-    //LINK
-        regex = /\[(.+?)\]\((.+?)\)\((.+?)\)|\[(.+?)\]\((.+?)\)/g // search if word/sentence respects the pattern [title/desc](link) or [title/desc](link)(param)
-        found = lines[line].match(regex) // put matching word/sentence of th current line in the found array
-        for(i in found) { // read found array
-            let data = /\[(.+?)\]\((.+?)\)\((.+?)\)|\[(.+?)\]\((.+?)\)/g.exec(found[i]) // actualize the regex (otherwise it keep the last matching word/sentence)
+        //IMAGES
+            regex = /!\[(.+?)\]\((.+?)\)/g // search if word/sentence respects the pattern ![title/desc](link)
+            found = lines[line].match(regex) // put matching word/sentence of th current line in the found array
+            for(i in found) { // read found array
+                let data = /!\[(.+?)\]\((.+?)\)/g.exec(found[i]) // actualize the regex (otherwise it keep the last matching word/sentence)
 
-            if(lines[line][lines[line].indexOf(found[i]) - 1] != "!") { // search the caractere juste before the "[title/desc](link)", if it's a !, it's an images
-                target = ""
-                rel = "noopener, noreferrer"
-
-                if(RegExp.$3.includes("blank")) { // if the params case contains "blank" attribute
-                    target = '_blank' // add _blank to target
-                }
-
-                if(RegExp.$3.includes("ugc") || params['ugc']) { // if the params case contains "ugc" attribute
-                    if(rel != "") {
-                        rel += ', ' // add only if there is still something in rel
-                    }
-                    rel += "ugc" // add ugc to rel
-                }
-
-                if(RegExp.$3.includes("sponsored")) { // if the params case contains "sponsored" attribute
-                    if(rel != "") {
-                        rel += ', ' // add only if there is still something in rel
-                    }
-                    rel += "sponsored" // add sponsored to rel
-                }
-
-                if(RegExp.$3.includes("nofollow")) { // if the params case contains "nofollow" attribute
-                    if(rel != "") {
-                        rel += ', ' // add only if there is still something in rel
-                    }
-                    rel += "nofollow" // add nofollow to rel
-                }
-
-                if(RegExp.$3 == "") { // if link form is []()
-                    let text = '<a href="' + htmlspecialchars(RegExp.$5) + '" rel="' + rel + '" target="' + target + '">' + RegExp.$4 + "</a>" // text = the link
+                if(params['noImages']) { // if noImages
+                    lines[line] = lines[line].replace("![" + RegExp.$1 +"](" + RegExp.$2 + ")", '<strong>Images are not allowed...</strong>') // replace old word by the image element
+                } 
+                else { // if images allowed
+                    let text = "" // text = the text in "alt" if withSyntaxElements is false, or the syntax element if is true
                     if(params["withSyntaxeElements"]) { // if syntaxe elements should be shown
-                        text = "[" + RegExp.$4 + '](<a href="' + htmlspecialchars(RegExp.$5) + '" rel="' + rel + '" target="' + target + '">' + text + "</a>)" // text = the link with syntax element
+                        text = "![" + RegExp.$1 + '](<a href="' + htmlspecialchars(RegExp.$2) + '" target="_blank" rel="noopener, noreferrer">' + RegExp.$2 + "</a>)" // re-add the syntax elements
                     }
-                    lines[line] = lines[line].replace("[" + RegExp.$4 +"](" + RegExp.$5 + ")", text) // replace the old word/sentence by the link
+                    lines[line] = lines[line].replace("![" + RegExp.$1 +"](" + RegExp.$2 + ")", text + '<img src="' + htmlspecialchars(RegExp.$2) + '" alt="' + RegExp.$1 + '" />') // replace old word by the image element
                 }
-                else { // if link form is []()()
-                    let text = '<a href="' + htmlspecialchars(RegExp.$2) + '" rel="' + rel + '" target="' + target + '">' + RegExp.$1 + "</a>" // text = the link (with target="_blank")
-                    if(params["withSyntaxeElements"]) { // if syntaxe elements should be shown
-                        text = "[" + RegExp.$1 + '](<a href="' + htmlspecialchars(RegExp.$2) + '" rel="' + rel + '" target="' + target + '">' + RegExp.$1 + "</a>)(" + RegExp.$3 + ")" // text = the link with syntax element (with target="_blank")
+            }
+
+        //LINK
+            regex = /\[(.+?)\]\((.+?)\)\((.+?)\)|\[(.+?)\]\((.+?)\)/g // search if word/sentence respects the pattern [title/desc](link) or [title/desc](link)(param)
+            found = lines[line].match(regex) // put matching word/sentence of th current line in the found array
+            for(i in found) { // read found array
+                let data = /\[(.+?)\]\((.+?)\)\((.+?)\)|\[(.+?)\]\((.+?)\)/g.exec(found[i]) // actualize the regex (otherwise it keep the last matching word/sentence)
+
+                if(lines[line][lines[line].indexOf(found[i]) - 1] != "!") { // search the caractere juste before the "[title/desc](link)", if it's a !, it's an images
+                    target = ""
+                    rel = "noopener, noreferrer"
+
+                    if(RegExp.$3.includes("blank")) { // if the params case contains "blank" attribute
+                        target = '_blank' // add _blank to target
                     }
-                    lines[line] = lines[line].replace("[" + RegExp.$1 +"](" + RegExp.$2 + ")(" + RegExp.$3 + ")", text) // replace the old word/sentence by the link
+
+                    if(RegExp.$3.includes("ugc") || params['ugc']) { // if the params case contains "ugc" attribute
+                        if(rel != "") {
+                            rel += ', ' // add only if there is still something in rel
+                        }
+                        rel += "ugc" // add ugc to rel
+                    }
+
+                    if(RegExp.$3.includes("sponsored")) { // if the params case contains "sponsored" attribute
+                        if(rel != "") {
+                            rel += ', ' // add only if there is still something in rel
+                        }
+                        rel += "sponsored" // add sponsored to rel
+                    }
+
+                    if(RegExp.$3.includes("nofollow")) { // if the params case contains "nofollow" attribute
+                        if(rel != "") {
+                            rel += ', ' // add only if there is still something in rel
+                        }
+                        rel += "nofollow" // add nofollow to rel
+                    }
+
+                    if(RegExp.$3 == "") { // if link form is []()
+                        let text = '<a href="' + htmlspecialchars(RegExp.$5) + '" rel="' + rel + '" target="' + target + '">' + RegExp.$4 + "</a>" // text = the link
+                        if(params["withSyntaxeElements"]) { // if syntaxe elements should be shown
+                            text = "[" + RegExp.$4 + '](<a href="' + htmlspecialchars(RegExp.$5) + '" rel="' + rel + '" target="' + target + '">' + text + "</a>)" // text = the link with syntax element
+                        }
+                        lines[line] = lines[line].replace("[" + RegExp.$4 +"](" + RegExp.$5 + ")", text) // replace the old word/sentence by the link
+                    }
+                    else { // if link form is []()()
+                        let text = '<a href="' + htmlspecialchars(RegExp.$2) + '" rel="' + rel + '" target="' + target + '">' + RegExp.$1 + "</a>" // text = the link (with target="_blank")
+                        if(params["withSyntaxeElements"]) { // if syntaxe elements should be shown
+                            text = "[" + RegExp.$1 + '](<a href="' + htmlspecialchars(RegExp.$2) + '" rel="' + rel + '" target="' + target + '">' + RegExp.$1 + "</a>)(" + RegExp.$3 + ")" // text = the link with syntax element (with target="_blank")
+                        }
+                        lines[line] = lines[line].replace("[" + RegExp.$1 +"](" + RegExp.$2 + ")(" + RegExp.$3 + ")", text) // replace the old word/sentence by the link
+                    }
                 }
             }
         }
@@ -300,7 +265,7 @@ render = (text, params = {}) => { // translate markdown into html
 }
 
 without = (markdown, lenght = "all") => {
-    var res = render(markdown).replace(/<\/p>/g, '\n')
+    var res = this.render(markdown).replace(/<\/p>/g, '\n')
     res = res.replace(/<\/h.>/g, '\n')
     res = res.replace(/<[^>]*>?/g, '')
 
