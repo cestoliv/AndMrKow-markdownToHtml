@@ -24,6 +24,7 @@ return : `<p>hello world! i'm using <strong>AndMrKow!</strong><p>`
         "withSyntaxeElements": true, // show markdown syntax elements
         "noImages": true, // replace images by the text "Images are not allowed..."
         "noTitles": true, // replace titles by a <strong> text
+        "ugc": true, // add ugc attribute to link and PREVENT XSS (REMOVE HTML TAG)
     }
 
 **/!\\** If withSyntaxeElements = true, there will be no sharp before
@@ -89,7 +90,10 @@ Surrounding words with `` ` `` turns them into code.
 ``Small piece of `code`.`` >> `<p>Small piece of <code>code</code>.</p>`
 
 ### Links
-There is a special syntax for creating a link: **\[Text\]\(https://chevro.fr\)** and an optional argument **(blank)**, to add a `target =" _ blank "` parameter to the link.
+There is a special syntax for creating a link: **\[Text\]\(https://chevro.fr\)** and an optional argument **(blank)**, **(ugc)**, **(sponsored)**, **(nofollow)**, to add a `target="_ blank"`, `rel="ugc"`, `rel="sponsored"` parameter to the link.
+
+**Do not add parentheses as a result, put them all in the same parenthesis and separate them with a comma.**
+`[GitHub](https://github.com)(blank, nofollow, ugc)`
 
 **/!\\**AndMrKow adds **rel="noopener, noreferrer"** parameters to links
 

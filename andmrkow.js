@@ -2,6 +2,12 @@
 
 render = (text, params = {}) => { // translate markdown into html
     //text = text.replace(/ /g, "&nbsp;") // replace all the space by html space (for allowing multiple space)
+    if(params["ugc"]) { // if ugc
+        // replace < and > for don't allow html tag and prevent XSS
+        text = text.replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+    }
+    
 
     var parsedText = "" // will contain all the html text to return
 
@@ -233,28 +239,47 @@ render = (text, params = {}) => { // translate markdown into html
             let data = /\[(.+?)\]\((.+?)\)\((.+?)\)|\[(.+?)\]\((.+?)\)/g.exec(found[i]) // actualize the regex (otherwise it keep the last matching word/sentence)
 
             if(lines[line][lines[line].indexOf(found[i]) - 1] != "!") { // search the caractere juste before the "[title/desc](link)", if it's a !, it's an images
-                if(RegExp.$3 == "") { // if RegExp.$3 is empty, the "param" section is empty, so it's a link without additionnal param
-                    let text = '<a href="' + htmlspecialchars(RegExp.$5) + '" rel="noopener, noreferrer">' + RegExp.$4 + "</a>" // text = the link
+                target = ""
+                rel = "noopener, noreferrer"
+
+                if(RegExp.$3.includes("blank")) { // if the params case contains "blank" attribute
+                    target = '_blank' // add _blank to target
+                }
+
+                if(RegExp.$3.includes("ugc") || params['ugc']) { // if the params case contains "ugc" attribute
+                    if(rel != "") {
+                        rel += ', ' // add only if there is still something in rel
+                    }
+                    rel += "ugc" // add ugc to rel
+                }
+
+                if(RegExp.$3.includes("sponsored")) { // if the params case contains "sponsored" attribute
+                    if(rel != "") {
+                        rel += ', ' // add only if there is still something in rel
+                    }
+                    rel += "sponsored" // add sponsored to rel
+                }
+
+                if(RegExp.$3.includes("nofollow")) { // if the params case contains "nofollow" attribute
+                    if(rel != "") {
+                        rel += ', ' // add only if there is still something in rel
+                    }
+                    rel += "nofollow" // add nofollow to rel
+                }
+
+                if(RegExp.$3 == "") { // if link form is []()
+                    let text = '<a href="' + htmlspecialchars(RegExp.$5) + '" rel="' + rel + '" target="' + target + '">' + RegExp.$4 + "</a>" // text = the link
                     if(params["withSyntaxeElements"]) { // if syntaxe elements should be shown
-                        text = "[" + RegExp.$4 + '](<a href="' + htmlspecialchars(RegExp.$5) + '" rel="noopener, noreferrer">' + text + "</a>)" // text = the link with syntax element
+                        text = "[" + RegExp.$4 + '](<a href="' + htmlspecialchars(RegExp.$5) + '" rel="' + rel + '" target="' + target + '">' + text + "</a>)" // text = the link with syntax element
                     }
                     lines[line] = lines[line].replace("[" + RegExp.$4 +"](" + RegExp.$5 + ")", text) // replace the old word/sentence by the link
                 }
-                else {
-                    if(RegExp.$3 == "blank") { // if param is equal to "blank", add target="_blank" to the link
-                        let text = '<a href="' + htmlspecialchars(RegExp.$2) + '" target="_blank" rel="noopener, noreferrer">' + RegExp.$1 + "</a>" // text = the link (with target="_blank")
-                        if(params["withSyntaxeElements"]) { // if syntaxe elements should be shown
-                            text = "[" + RegExp.$1 + '](<a href="' + htmlspecialchars(RegExp.$2) + '" target="_blank" rel="noopener, noreferrer">' + RegExp.$1 + "</a>)(" + RegExp.$3 + ")" // text = the link with syntax element (with target="_blank")
-                        }
-                        lines[line] = lines[line].replace("[" + RegExp.$1 +"](" + RegExp.$2 + ")(" + RegExp.$3 + ")", text) // replace the old word/sentence by the link
+                else { // if link form is []()()
+                    let text = '<a href="' + htmlspecialchars(RegExp.$2) + '" rel="' + rel + '" target="' + target + '">' + RegExp.$1 + "</a>" // text = the link (with target="_blank")
+                    if(params["withSyntaxeElements"]) { // if syntaxe elements should be shown
+                        text = "[" + RegExp.$1 + '](<a href="' + htmlspecialchars(RegExp.$2) + '" rel="' + rel + '" target="' + target + '">' + RegExp.$1 + "</a>)(" + RegExp.$3 + ")" // text = the link with syntax element (with target="_blank")
                     }
-                    else { // else, no param, same as normal link
-                        let text = '<a href="' + htmlspecialchars(RegExp.$2) + '" rel="noopener, noreferrer">' + RegExp.$1 + "</a>"
-                        if(params["withSyntaxeElements"]) { 
-                            text = "[" + RegExp.$1 + '](<a href="' + htmlspecialchars(RegExp.$2) + '" rel="noopener, noreferrer">' + RegExp.$1 + "</a>)(" + RegExp.$3 + ")"
-                        }
-                        lines[line] = lines[line].replace("[" + RegExp.$1 +"](" + RegExp.$2 + ")(" + RegExp.$3 + ")", text)
-                    }
+                    lines[line] = lines[line].replace("[" + RegExp.$1 +"](" + RegExp.$2 + ")(" + RegExp.$3 + ")", text) // replace the old word/sentence by the link
                 }
             }
         }
