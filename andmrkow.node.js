@@ -206,29 +206,38 @@ exports.render = (text, params = {}) => { // translate markdown into html
                     target = ""
                     rel = "noopener, noreferrer"
 
-                    if(RegExp.$3.includes("blank")) { // if the params case contains "blank" attribute
+                    if(RegExp.$3.includes("blank")  && !params['ugc']) { // if the params case contains "blank" attribute
                         target = '_blank' // add _blank to target
                     }
 
-                    if(RegExp.$3.includes("ugc") || params['ugc']) { // if the params case contains "ugc" attribute
+                    if(RegExp.$3.includes("ugc") && !params['ugc']) { // if the params case contains "ugc" attribute
                         if(rel != "") {
                             rel += ', ' // add only if there is still something in rel
                         }
                         rel += "ugc" // add ugc to rel
                     }
 
-                    if(RegExp.$3.includes("sponsored")) { // if the params case contains "sponsored" attribute
+                    if(RegExp.$3.includes("sponsored")  && !params['ugc']) { // if the params case contains "sponsored" attribute
                         if(rel != "") {
                             rel += ', ' // add only if there is still something in rel
                         }
                         rel += "sponsored" // add sponsored to rel
                     }
 
-                    if(RegExp.$3.includes("nofollow")) { // if the params case contains "nofollow" attribute
+                    if(RegExp.$3.includes("nofollow")  && !params['ugc']) { // if the params case contains "nofollow" attribute
                         if(rel != "") {
                             rel += ', ' // add only if there is still something in rel
                         }
                         rel += "nofollow" // add nofollow to rel
+                    }
+
+                    if(params["ugc"]) { // if ugc params
+                        if(rel != "") {
+                            rel += ', ' // add only if there is still something in rel
+                        }
+                        rel += "ugc" // add ugc to rel
+
+                        target = '_blank' // add _blank to target
                     }
 
                     if(RegExp.$3 == "") { // if link form is []()
