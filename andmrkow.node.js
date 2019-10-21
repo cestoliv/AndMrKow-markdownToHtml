@@ -155,7 +155,7 @@ exports.render = (text, params = {}) => { // translate markdown into html
                 let slugTitle = this.slugify(title) // Get the title slug
                 let text = params["withSyntaxeElements"] ? "#".repeat(hN) + " " + title : title // text = "## + title"  if syntax element should be shown, otherwise, text = title
                 
-                if(params['sharpBefore'] && !params['withSyntaxeElements']) { text = "#"*hN + " " + text } // if in params, add sharp before the title
+                if(params['sharpBefore'] && !params['withSyntaxeElements']) { text = "#".repeat(hN) + " " + text } // if in params, add sharp before the title
                 if(params['titleAnchor']) { text = '<a href="#' + slugTitle + '">' + text + "</a>"} // if in params, add link to the anchor
 
                 let hNb = hN.toString() // number for the title tag (<hX>)
