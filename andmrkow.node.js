@@ -277,6 +277,8 @@ exports.without = (markdown, lenght = "all") => {
     var res = this.render(markdown).replace(/<\/p>/g, '\n')
     res = res.replace(/<\/h.>/g, '\n')
     res = res.replace(/<[^>]*>?/g, '')
+    res = res.replace(/&/g, "&amp;")
+    res = res.replace(/&emsp/g, " ")
 
     if(lenght != "all") {
         res = res.substr(0, lenght)
