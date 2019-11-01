@@ -13,6 +13,8 @@ render = (text, params = {}) => { // translate markdown into html
 
     var lines = text.split(/\r\n|\r|\n/) // create an array of each lines
 
+    var firstImage = "" // init a var wich may contains the first image (if getFirstImage in params)
+
     //VARS
     var isCode = false // will be true if we are in a text block
 
@@ -184,6 +186,10 @@ render = (text, params = {}) => { // translate markdown into html
             for(i in found) { // read found array
                 let data = /!\[(.+?)\]\((.+?)\)/g.exec(found[i]) // actualize the regex (otherwise it keep the last matching word/sentence)
 
+                if(params["getFirstImage"] && firstImage == "") { // if getFirstImage is on params and firstImage is empty
+                    firstImage = htmlspecialchars(RegExp.$2) // set firstImage to path of current image
+                }
+
                 if(params['noImages']) { // if noImages
                     lines[line] = lines[line].replace("![" + RegExp.$1 +"](" + RegExp.$2 + ")", '<strong>Images are not allowed...</strong>') // replace old word by the image element
                 } 
@@ -270,7 +276,13 @@ render = (text, params = {}) => { // translate markdown into html
         }    
     }
 
-    return(parsedText) // return text
+    if(params["getFirstImage"]) {
+        return({text: parsedText, firstImage: firstImage}) // return text and first image path
+    }
+    else {
+        return({text: parsedText}) // return text
+    }
+    
 }
 
 without = (markdown, lenght = "all") => {
