@@ -286,7 +286,8 @@ render = (text, params = {}) => { // translate markdown into html
 }
 
 without = (markdown, lenght = "all") => {
-    var res = this.render(markdown).replace(/<\/p>/g, '\n')
+    var res = this.render(markdown).text
+    res = res.replace(/<\/p>/g, '\n')
     res = res.replace(/<\/h.>/g, '\n')
     res = res.replace(/<[^>]*>?/g, '')
     res = res.replace(/&/g, "&amp;")
