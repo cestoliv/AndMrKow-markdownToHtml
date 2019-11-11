@@ -14,6 +14,7 @@ exports.render = (text, params = {}) => { // translate markdown into html
     var lines = text.split(/\r\n|\r|\n/) // create an array of each lines
 
     var firstImage = "" // init a var wich may contains the first image (if getFirstImage in params)
+    var firstImageAlt = "" // init a var wich may contains the alt of the first image (if getFirstImage in params)
 
     //VARS
     var isCode = false // will be true if we are in a text block
@@ -185,20 +186,22 @@ exports.render = (text, params = {}) => { // translate markdown into html
             found = lines[line].match(regex) // put matching word/sentence of th current line in the found array
             for(i in found) { // read found array
                 let data = /!\[(.+?)\]\((.+?)\)/g.exec(found[i]) // actualize the regex (otherwise it keep the last matching word/sentence)
-
-                if(params["getFirstImage"] && firstImage == "") { // if getFirstImage is on params and firstImage is empty
-                    firstImage = htmlspecialchars(RegExp.$2) // set firstImage to path of current image
+                let alt = RegExp.$1
+                let path = RegExp.$2
+                if(params["getFirstImage"] && firstImage == "") { // if getFirstImage is on params and firstImage (and firstImageAlt) is empty
+                    firstImage = htmlspecialchars(path) // set firstImage to path of current image
+                    firstImageAlt = alt // set firstImageAlt to alt of current image
                 }
 
                 if(params['noImages']) { // if noImages
-                    lines[line] = lines[line].replace("![" + RegExp.$1 +"](" + RegExp.$2 + ")", '<strong>Images are not allowed...</strong>') // replace old word by the image element
+                    lines[line] = lines[line].replace("![" + alt +"](" + path + ")", '<strong>Images are not allowed...</strong>') // replace old word by the image element
                 } 
                 else { // if images allowed
                     let text = "" // text = the text in "alt" if withSyntaxElements is false, or the syntax element if is true
                     if(params["withSyntaxeElements"]) { // if syntaxe elements should be shown
-                        text = "![" + RegExp.$1 + '](<a href="' + htmlspecialchars(RegExp.$2) + '" target="_blank" rel="noopener, noreferrer">' + RegExp.$2 + "</a>)" // re-add the syntax elements
+                        text = "![" + alt + '](<a href="' + htmlspecialchars(path) + '" target="_blank" rel="noopener, noreferrer">' + path + "</a>)" // re-add the syntax elements
                     }
-                    lines[line] = lines[line].replace("![" + RegExp.$1 +"](" + RegExp.$2 + ")", text + '<img src="' + htmlspecialchars(RegExp.$2) + '" alt="' + RegExp.$1 + '" />') // replace old word by the image element
+                    lines[line] = lines[line].replace("![" + alt +"](" + path + ")", text + '<img src="' + htmlspecialchars(path) + '" alt="' + alt + '" />') // replace old word by the image element
                 }
             }
 
@@ -277,7 +280,7 @@ exports.render = (text, params = {}) => { // translate markdown into html
     }
 
     if(params["getFirstImage"]) {
-        return({text: parsedText, firstImage: firstImage}) // return text and first image path
+        return({text: parsedText, firstImage: firstImage, firstImageAlt: firstImageAlt}) // return text and first image path
     }
     else {
         return({text: parsedText}) // return text
@@ -321,6 +324,8 @@ exports.slugify = (str) => {
 
     return str;
 }
+
+/////////////////////////////////// TOOLS
 
 htmlspecialchars = (str) => {
     if (typeof(str) == "string") {

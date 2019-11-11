@@ -25,7 +25,7 @@ return : `{text: "<p>hello world! i'm using <strong>AndMrKow!</strong><p>"}`
         "noImages": true, // replace images by the text "Images are not allowed..."
         "noTitles": true, // replace titles by a <strong> text
         "ugc": true, // add ugc attribute to link and PREVENT XSS (REMOVE HTML TAG)
-        "getFirstImage": true // return the first image (return : {text: "your parsed markdown", firstImage: "https://path.to.your.first.image"})
+        "getFirstImage": true // return the first image and the alt (return : {text: "your parsed markdown", firstImage: "https://path.to.your.first.image", , firstImageAlt: "your cool image"})
     }
 
 **/!\\** If withSyntaxeElements = true, there will be no sharp before

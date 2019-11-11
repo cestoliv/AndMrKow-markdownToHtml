@@ -14,6 +14,7 @@ render = (text, params = {}) => { // translate markdown into html
     var lines = text.split(/\r\n|\r|\n/) // create an array of each lines
 
     var firstImage = "" // init a var wich may contains the first image (if getFirstImage in params)
+    var firstImageAlt = "" // init a var wich may contains the alt of the first image (if getFirstImage in params)
 
     //VARS
     var isCode = false // will be true if we are in a text block
@@ -185,20 +186,22 @@ render = (text, params = {}) => { // translate markdown into html
             found = lines[line].match(regex) // put matching word/sentence of th current line in the found array
             for(i in found) { // read found array
                 let data = /!\[(.+?)\]\((.+?)\)/g.exec(found[i]) // actualize the regex (otherwise it keep the last matching word/sentence)
-
-                if(params["getFirstImage"] && firstImage == "") { // if getFirstImage is on params and firstImage is empty
-                    firstImage = htmlspecialchars(RegExp.$2) // set firstImage to path of current image
+                let alt = RegExp.$1
+                let path = RegExp.$2
+                if(params["getFirstImage"] && firstImage == "") { // if getFirstImage is on params and firstImage (and firstImageAlt) is empty
+                    firstImage = htmlspecialchars(path) // set firstImage to path of current image
+                    firstImageAlt = alt // set firstImageAlt to alt of current image
                 }
 
                 if(params['noImages']) { // if noImages
-                    lines[line] = lines[line].replace("![" + RegExp.$1 +"](" + RegExp.$2 + ")", '<strong>Images are not allowed...</strong>') // replace old word by the image element
+                    lines[line] = lines[line].replace("![" + alt +"](" + path + ")", '<strong>Images are not allowed...</strong>') // replace old word by the image element
                 } 
                 else { // if images allowed
                     let text = "" // text = the text in "alt" if withSyntaxElements is false, or the syntax element if is true
                     if(params["withSyntaxeElements"]) { // if syntaxe elements should be shown
-                        text = "![" + RegExp.$1 + '](<a href="' + htmlspecialchars(RegExp.$2) + '" target="_blank" rel="noopener, noreferrer">' + RegExp.$2 + "</a>)" // re-add the syntax elements
+                        text = "![" + alt + '](<a href="' + htmlspecialchars(path) + '" target="_blank" rel="noopener, noreferrer">' + path + "</a>)" // re-add the syntax elements
                     }
-                    lines[line] = lines[line].replace("![" + RegExp.$1 +"](" + RegExp.$2 + ")", text + '<img src="' + htmlspecialchars(RegExp.$2) + '" alt="' + RegExp.$1 + '" />') // replace old word by the image element
+                    lines[line] = lines[line].replace("![" + alt +"](" + path + ")", text + '<img src="' + htmlspecialchars(path) + '" alt="' + alt + '" />') // replace old word by the image element
                 }
             }
 
@@ -277,7 +280,7 @@ render = (text, params = {}) => { // translate markdown into html
     }
 
     if(params["getFirstImage"]) {
-        return({text: parsedText, firstImage: firstImage}) // return text and first image path
+        return({text: parsedText, firstImage: firstImage, firstImageAlt: firstImageAlt}) // return text and first image path
     }
     else {
         return({text: parsedText}) // return text
@@ -322,113 +325,7 @@ slugify = (str) => {
     return str;
 }
 
-fromHtml = (html) => {
-    html = splitHtml(html)
-
-    for(let i = 0; i < html.length; i++) {
-        html[i] = htmlLinkToMarkdown(html[i])
-        html[i] = htmlImgToMarkdown(html[i])
-
-        if(html[i].startsWith("<h")) {
-            if(html[i].startsWith("<h1")) {
-                html[i] = "# " + html[i].replace(/<h1.*?>/, "").replace("</h1>", "")
-            }
-            else if(html[i].startsWith("<h2")) {
-                html[i] = "## " + html[i].replace(/<h2.*?>/, "").replace("</h2>", "")
-            }
-            else if(html[i].startsWith("<h3")) {
-                html[i] = "### " + html[i].replace(/<h3.*?>/, "").replace("</h3>", "")
-            }
-            else if(html[i].startsWith("<h4")) {
-                html[i] = "#### " + html[i].replace(/<h4.*?>/, "").replace("</h4>", "")
-            }
-            else if(html[i].startsWith("<h5")) {
-                html[i] = "##### " + html[i].replace(/<h5.*?>/, "").replace("</h5>", "")
-            }
-            else {
-                html[i] = "###### " + html[i].replace(/<h.*?>/, "").replace("</h6>", "")
-            }
-        }
-        else if(html[i].startsWith("<p")) {
-            html[i] = html[i].replace(/<p.*?>/, "").replace("</p>", "")
-
-            while(html[i].match(/<strong.*?>(.*?)<\/strong>/)) {
-                html[i] = html[i].replace(new RegExp("<strong.*?>" + RegExp.$1 + "</strong>"), '**' + RegExp.$1 + "**")
-            }
-
-            while(html[i].match(/<em.*?>(.*?)<\/em>/)) {
-                html[i] = html[i].replace(new RegExp("<em.*?>" + RegExp.$1 + "</em>"), '*' + RegExp.$1 + "*")
-            }
-        }
-
-        html[i] += "\n"
-    }
-
-    html = html.join("<br />")
-
-    return html
-}
-
-htmlLinkToMarkdown = (html) => {
-    while(html.match(/<a.*?>(.*?)<\/a>/)) {
-        text = RegExp.$1
-        href = ""
-        target = ""
-        rel = ""
-        if(html.match(/<a.*?href="(.*?)".*?>(.*?)<\/a>/)) {
-            href = RegExp.$1
-        }
-        if(html.match(/<a.*?target="(.*?)".*?>(.*?)<\/a>/)) {
-            target = RegExp.$1
-            if(target == "_blank") {
-                target = "blank"
-            }
-        }
-        if(html.match(/<a.*?rel="(.*?)".*?>(.*?)<\/a>/)) {
-            rel = RegExp.$1
-        }
-
-        html = html.replace(/<a.*?>(.*?)<\/a>/, "[" + text + "](" + href + ")" + "(" + target + ", " + rel + ")")
-    }
-
-    return html
-}
-
-htmlImgToMarkdown = (html) => {
-    while(html.match(/<img.*?>/)) {
-        alt = ""
-        src = ""
-        if(html.match(/<img.*?alt="(.*?)".*?>/)) {
-            alt = RegExp.$1
-        }
-        if(html.match(/<img.*?src="(.*?)".*?>/)) {
-            src = RegExp.$1
-        }
-
-        html = html.replace(/<img.*?>/, "![" + alt + "](" + src + ")")
-    }
-
-    return html
-}
-
-splitHtml = (html) => {
-    html = html.replace(/<br>/g, "")
-    html = html.replace(/<br\/>/g, "")
-    html = html.replace(/<br \/>/g, "")
-    html = html.split(/<\/h.>|<\/p>/)
-    
-    for(let i = 0; i < html.length; i++) {
-        if(html[i].startsWith("<h")) {
-            html[i].match(/<h(.).*?>/)
-            html[i] = html[i] + "</h" + RegExp.$1 + ">"
-        }
-        else if(html[i].startsWith("<p")) {
-            html[i] = html[i] + "</p>"
-        }
-    }
-
-    return html
-}
+/////////////////////////////////// TOOLS
 
 htmlspecialchars = (str) => {
     if (typeof(str) == "string") {
