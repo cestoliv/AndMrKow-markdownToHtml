@@ -179,12 +179,19 @@ render = (text, params = {}) => { // translate markdown into html
                 }
                 lines[line] = lines[line].replace(("#".repeat(hN) + " ") + title, bal + text + endbal) // replace title in text by a title surronded by bal, the start tag, and enbal, the end tag
             }
+
+        //QUOTES
+            if(/^&gt; (.+)/.exec(lines[line])) { // search for : > text, > replaced by &gt; because of the escape
+                noP = true // quotes don't need to be surronded by <p> tags
+                lines[line] = "<blockquote><p>" + RegExp.$1 + "</p></blockquote>"
+            }
         
 
         //IMAGES
             regex = /!\[(.+?)\]\((.+?)\)/g // search if word/sentence respects the pattern ![title/desc](link)
             found = lines[line].match(regex) // put matching word/sentence of th current line in the found array
             for(i in found) { // read found array
+                noP = true // img don't need to be surronded by <p> tags
                 let data = /!\[(.+?)\]\((.+?)\)/g.exec(found[i]) // actualize the regex (otherwise it keep the last matching word/sentence)
                 let alt = RegExp.$1
                 let path = RegExp.$2
