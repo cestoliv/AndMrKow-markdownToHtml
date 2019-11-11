@@ -325,6 +325,15 @@ exports.slugify = (str) => {
     return str;
 }
 
+exports.getFirstImage = (text) => {
+    if(/!\[(.+?)\]\((.+?)\)/.exec(text)) {
+        return {path: RegExp.$2, alt: RegExp.$1}
+    }
+    else {
+        return {}
+    }
+}
+
 /////////////////////////////////// TOOLS
 
 htmlspecialchars = (str) => {

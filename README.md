@@ -40,6 +40,14 @@ return : `hello world! i'm using AndMrKow!`
 `without("hello world! i'm using **AndMrKow!**", 10)`
 return : `hello worl`
 
+**getFirstImage = (text)** *return the first image (and alt) of a markdown string*
+*examples :*
+
+`getFirstImage("Voici une image : ![Logo chevro.fr](https://chevro.fr/files/favicon/favicon.ico)")`
+return : `{path: "https://chevro.fr/files/favicon/favicon.ico", alt: "Logo chevro.fr"}`
+
+if there is no image in the markdown string, the output will be : `{}`
+
 **slugify = (text)** *slugify a string*
 *examples :*
 
