@@ -259,14 +259,14 @@ exports.render = (text, params = {}) => { // translate markdown into html
                     if(RegExp.$3 == "") { // if link form is []()
                         let text = '<a href="' + htmlspecialchars(RegExp.$5) + '" rel="' + rel + '" target="' + target + '">' + RegExp.$4 + "</a>" // text = the link
                         if(params["withSyntaxeElements"]) { // if syntaxe elements should be shown
-                            text = "[" + RegExp.$4 + '](<a href="' + htmlspecialchars(RegExp.$5) + '" rel="' + rel + '" target="' + target + '">' + text + "</a>)" // text = the link with syntax element
+                            text = "[" + RegExp.$4 + '](<a href="' + htmlspecialchars(RegExp.$5) + '" rel="' + rel + '" target="' + target + '">' + RegExp.$5 + "</a>)" // text = the link with syntax element
                         }
                         lines[line] = lines[line].replace("[" + RegExp.$4 +"](" + RegExp.$5 + ")", text) // replace the old word/sentence by the link
                     }
                     else { // if link form is []()()
                         let text = '<a href="' + htmlspecialchars(RegExp.$2) + '" rel="' + rel + '" target="' + target + '">' + RegExp.$1 + "</a>" // text = the link (with target="_blank")
                         if(params["withSyntaxeElements"]) { // if syntaxe elements should be shown
-                            text = "[" + RegExp.$1 + '](<a href="' + htmlspecialchars(RegExp.$2) + '" rel="' + rel + '" target="' + target + '">' + RegExp.$1 + "</a>)(" + RegExp.$3 + ")" // text = the link with syntax element (with target="_blank")
+                            text = "[" + RegExp.$1 + '](<a href="' + htmlspecialchars(RegExp.$2) + '" rel="' + rel + '" target="' + target + '">' + RegExp.$2 + "</a>)(" + RegExp.$3 + ")" // text = the link with syntax element (with target="_blank")
                         }
                         lines[line] = lines[line].replace("[" + RegExp.$1 +"](" + RegExp.$2 + ")(" + RegExp.$3 + ")", text) // replace the old word/sentence by the link
                     }
