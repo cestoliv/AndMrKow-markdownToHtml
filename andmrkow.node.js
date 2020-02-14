@@ -7,7 +7,8 @@ exports.render = (text, params = {}) => { // translate markdown into html
         text = text.replace(/</g, "&lt;")
             .replace(/>/g, "&gt;")
     }
-    
+
+    text = escapeChars(text)
 
     var parsedText = "" // will contain all the html text to return
 
@@ -77,8 +78,6 @@ exports.render = (text, params = {}) => { // translate markdown into html
     parsedText = this.transformLinks(parsedText, params)
     fImage = this.getFirstImage(parsedText) // need to be executed before the transformImages because of the regular expression of getFirstImage
     parsedText = this.transformImages(parsedText, params)
-
-    //parsedText = escapeChars(parsedText)
 
     if(params["getFirstImage"]) {
         return({text: parsedText, firstImage: fImage.path, firstImageAlt: fImage.alt}) // return text and first image path
