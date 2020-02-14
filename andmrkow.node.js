@@ -20,7 +20,7 @@ exports.render = (text, params = {}) => { // translate markdown into html
         var noP = false // will be true if the current line must not be surrounded by <p> tags
         var isComment = false // will be true if the current line is a comment
 
-        lines[line] = escapeChars(lines[line])
+        
     //COMMENT
         if(/^\/\/(.+)/.exec(lines[line])) { // if the current line start with a double slash
             if(!params["withSyntaxeElements"]) { // if syntaxe elements should not be shown, otherwise we do nothing (we keep the comment).
@@ -77,6 +77,8 @@ exports.render = (text, params = {}) => { // translate markdown into html
     parsedText = this.transformLinks(parsedText, params)
     fImage = this.getFirstImage(parsedText) // need to be executed before the transformImages because of the regular expression of getFirstImage
     parsedText = this.transformImages(parsedText, params)
+
+    //parsedText = escapeChars(parsedText)
 
     if(params["getFirstImage"]) {
         return({text: parsedText, firstImage: fImage.path, firstImageAlt: fImage.alt}) // return text and first image path
@@ -139,6 +141,7 @@ exports.getFirstImage = (text) => {
 transformLinks = (markdown, params) => {
     regex = /\[(.+?)\]\((.+?)\)\((.+?)\)|\[(.+?)\]\((.+?)\)/g // search if word/sentence respects the pattern [title/desc](link) or [title/desc](link)(param)
     found = markdown.match(regex) // put matching word/sentence of th current line in the found array
+    
     for(i in found) { // read found array
         let data = /\[(.+?)\]\((.+?)\)\((.+?)\)|\[(.+?)\]\((.+?)\)/g.exec(found[i]) // actualize the regex (otherwise it keep the last matching word/sentence)
 
@@ -181,16 +184,16 @@ transformLinks = (markdown, params) => {
             }
 
             if(RegExp.$3 == "") { // if link form is []()
-                let text = '<a href="' + htmlspecialchars(RegExp.$5) + '" rel="' + rel + '" target="' + target + '">' + RegExp.$4 + "</a>" // text = the link
+                let text = '<a href="' + RegExp.$5 + '" rel="' + rel + '" target="' + target + '">' + RegExp.$4 + "</a>" // text = the link
                 if(params["withSyntaxeElements"]) { // if syntaxe elements should be shown
-                    text = "[" + RegExp.$4 + '](<a href="' + htmlspecialchars(RegExp.$5) + '" rel="' + rel + '" target="' + target + '">' + RegExp.$5 + "</a>)" // text = the link with syntax element
+                    text = "[" + RegExp.$4 + '](<a href="' + RegExp.$5 + '" rel="' + rel + '" target="' + target + '">' + RegExp.$5 + "</a>)" // text = the link with syntax element
                 }
                 markdown = markdown.replace("[" + RegExp.$4 +"](" + RegExp.$5 + ")", text) // replace the old word/sentence by the link
             }
             else { // if link form is []()()
-                let text = '<a href="' + htmlspecialchars(RegExp.$2) + '" rel="' + rel + '" target="' + target + '">' + RegExp.$1 + "</a>" // text = the link (with target="_blank")
+                let text = '<a href="' + RegExp.$2 + '" rel="' + rel + '" target="' + target + '">' + RegExp.$1 + "</a>" // text = the link (with target="_blank")
                 if(params["withSyntaxeElements"]) { // if syntaxe elements should be shown
-                    text = "[" + RegExp.$1 + '](<a href="' + htmlspecialchars(RegExp.$2) + '" rel="' + rel + '" target="' + target + '">' + RegExp.$2 + "</a>)(" + RegExp.$3 + ")" // text = the link with syntax element (with target="_blank")
+                    text = "[" + RegExp.$1 + '](<a href="' + RegExp.$2 + '" rel="' + rel + '" target="' + target + '">' + RegExp.$2 + "</a>)(" + RegExp.$3 + ")" // text = the link with syntax element (with target="_blank")
                 }
                 markdown = markdown.replace("[" + RegExp.$1 +"](" + RegExp.$2 + ")(" + RegExp.$3 + ")", text) // replace the old word/sentence by the link
             }
