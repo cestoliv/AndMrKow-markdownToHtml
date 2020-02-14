@@ -2,13 +2,11 @@
 
 render = (text, params = {}) => { // translate markdown into html
     //text = text.replace(/ /g, "&nbsp;") // replace all the space by html space (for allowing multiple space)
-    if(params["ugc"]) { // if ugc
-        // replace < and > for don't allow html tag and prevent XSS
-        text = text.replace(/</g, "&lt;")
-            .replace(/>/g, "&gt;")
-    }
 
     text = escapeChars(text)
+    text = this.transformLinks(text, params)
+    fImage = this.getFirstImage(text) // need to be executed before the transformImages because of the regular expression of getFirstImage
+    text = this.transformImages(text, params)
 
     var parsedText = "" // will contain all the html text to return
 
@@ -75,10 +73,6 @@ render = (text, params = {}) => { // translate markdown into html
         }    
     }
 
-    parsedText = this.transformLinks(parsedText, params)
-    fImage = this.getFirstImage(parsedText) // need to be executed before the transformImages because of the regular expression of getFirstImage
-    parsedText = this.transformImages(parsedText, params)
-
     if(params["getFirstImage"]) {
         return({text: parsedText, firstImage: fImage.path, firstImageAlt: fImage.alt}) // return text and first image path
     }
@@ -138,6 +132,18 @@ getFirstImage = (text) => {
 
 //take the all text
 transformLinks = (markdown, params) => {
+    regex = /<((http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&\/\/=]*))>/g // search for match : <link.ex>
+    found = markdown.match(regex) 
+    console.log(markdown)
+
+    for(i in found) { // read found array
+        let data = /<((http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&\/\/=]*))>/g.exec(found[i]) // refresh between occurences
+        console.log(RegExp.$1)
+        let text = '<a href="' + RegExp.$1 + '" rel="noopener, noreferrer" target="_blank">' + RegExp.$1 + "</a>" // text = the html link
+        markdown = markdown.replace("<" + RegExp.$1 + ">", text) // replace the old word/sentence by the link
+    }
+
+    
     regex = /\[(.+?)\]\((.+?)\)\((.+?)\)|\[(.+?)\]\((.+?)\)/g // search if word/sentence respects the pattern [title/desc](link) or [title/desc](link)(param)
     found = markdown.match(regex) // put matching word/sentence of th current line in the found array
     
@@ -294,7 +300,7 @@ transformHeaders = (markdownLine, params) => {
 
 // take a line
 transformQuotes = (markdownLine, params) => {
-    if(/^&gt; (.+)/.exec(markdownLine)) { // search for : > text, > replaced by &gt; because of the escape
+    if(/^&gt; (.+)/.exec(markdownLine) || /^> (.+)/.exec(markdownLine)) { // search for : > text, > replaced by &gt; because of the escape
         noP = true // quotes don't need to be surronded by <p> tags
         markdownLine = "<blockquote><p>" + RegExp.$1 + "</p></blockquote>"
     }

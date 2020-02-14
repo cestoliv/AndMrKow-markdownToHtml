@@ -24,7 +24,7 @@ return : `{text: "<p>hello world! i'm using <strong>AndMrKow!</strong><p>"}`
         "withSyntaxeElements": true, // show markdown syntax elements
         "noImages": true, // replace images by the text "Images are not allowed..."
         "noTitles": true, // replace titles by a <strong> text
-        "ugc": true, // add ugc attribute to link and PREVENT XSS (REMOVE HTML TAG)
+        "ugc": true, // add ugc attribute to all links
         "getFirstImage": true // return the first image and the alt (return : {text: "your parsed markdown", firstImage: "https://path.to.your.first.image", , firstImageAlt: "your cool image"})
     }
 
