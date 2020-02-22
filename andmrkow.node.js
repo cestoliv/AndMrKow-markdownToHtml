@@ -1,7 +1,7 @@
 //AndMrKow-markdownToHtml
 
 exports.render = (text, params = {}) => { // translate markdown into html
-    //text = text.replace(/ /g, "&nbsp;") // replace all the space by html space (for allowing multiple space)
+    text = text.replace(/ /g, "&nbsp;") // replace all the space by html space (for allowing multiple space)
 
     text = this.escapeChars(text)
     text = this.transformLinks(text, params)
@@ -316,7 +316,7 @@ transformHeaders = (markdownLine, params) => {
 
 // take a line
 transformQuotes = (markdownLine, params) => {
-    if(/^&gt; (.+)/.exec(markdownLine) || /^> (.+)/.exec(markdownLine)) { // search for : > text, > replaced by &gt; because of the escape
+    if(/^&gt;&nbsp;(.+)/.exec(markdownLine) || /^>&nbsp;(.+)/.exec(markdownLine)) { // search for : > text, > replaced by &gt; because of the escape
         noP = true // quotes don't need to be surronded by <p> tags
         markdownLine = "<blockquote><p>" + RegExp.$1 + "</p></blockquote>"
     }
