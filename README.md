@@ -7,7 +7,7 @@ It's a simple tool to translate markdown into html.
 **andmrkow.js, to be used with Javascript**
 **andmrkow.node.js, to be used with node.js**
 
-### Functions :
+## Functions :
 **render(text, params = {})** *translate markdown into html*
 
 *examples :*
@@ -15,10 +15,10 @@ It's a simple tool to translate markdown into html.
 `render("hello world! i'm using **AndMrKow!**")`
 return : `{text: "<p>hello world! i'm using <strong>AndMrKow!</strong><p>"}`
 
-#### Params :
+**Params :**
 
     params = {
-        "shiftTitles": true, // shift th titles : h1 became h2, h2 => h3... /!\ : h6 => h6
+        "shiftTitles": true, // shift the titles : h1 became h2, h2 => h3... /!\ : h6 => h6
         "sharpBefore": true, // add a sharp before the title
         "titleAnchor": true, // title is a link with anchor
         "withSyntaxeElements": true, // show markdown syntax elements
@@ -30,7 +30,7 @@ return : `{text: "<p>hello world! i'm using <strong>AndMrKow!</strong><p>"}`
 
 **/!\\** If withSyntaxeElements = true, there will be no sharp before
 
-
+___
 **whitout = (text, lenght = "all")** *remove markdown syntax elements*
 *examples :*
 
@@ -40,6 +40,7 @@ return : `hello world! i'm using AndMrKow!`
 `without("hello world! i'm using **AndMrKow!**", 10)`
 return : `hello worl`
 
+___
 **getFirstImage = (text)** *return the first image (and alt) of a markdown string*
 *examples :*
 
@@ -53,3 +54,13 @@ if there is no image in the markdown string, the output will be : `{}`
 
 `slugify("Titre de niveau 1")`
 return : `titre-de-niveau-1`
+
+## Authors
+
+* **CESTOLIV** - [@cestoliv](https://github.com/cestoliv)
+
+See also the list of [contributors](https://github.com/cestoliv/bluewrite-client-web/contributors) who participated in this project.
+
+## License
+
+This project is licensed under the IOPL - see the [LICENSE.md](LICENSE.md) file for details
