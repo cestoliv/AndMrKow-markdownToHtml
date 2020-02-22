@@ -58,7 +58,12 @@ exports.render = (text, params = {}) => { // translate markdown into html
             lines[line] = this.transformBold(lines[line], params)
             lines[line] = this.transformItalic(lines[line], params)
             lines[line] = this.transformQuotes(lines[line], params)
-            lines[line] = this.transformHeaders(lines[line], params)
+
+            var nLine = this.transformHeaders(lines[line], params)
+            if(nLine != lines[line]) { // if there is a change, don't surrond the header with <p>
+                noP = true
+            }
+            lines[line] = nLine
         }
 
         if((lines[line] == "" || lines[line] == null) && !isComment) { // if line is empty and is not a comment
