@@ -79,10 +79,10 @@ exports.render = (text, params = {}) => { // translate markdown into html
     }
 
     if(params["getFirstImage"]) {
-        return({text: parsedText, firstImage: {path: fImage.path, alt: fImage.alt}}) // return text and first image path
+        return({html: parsedText, firstImage: {path: fImage.path, alt: fImage.alt}}) // return text and first image path
     }
     else {
-        return({text: parsedText}) // return text
+        return({html: parsedText}) // return text
     }
     
 }
