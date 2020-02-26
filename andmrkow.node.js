@@ -88,7 +88,7 @@ exports.render = (text, params = {}) => { // translate markdown into html
 }
 
 exports.without = (markdown, lenght = "all") => {
-    var res = this.render(markdown).text
+    var res = this.render(markdown).html
     res = res.replace(/<\/p>/g, '\n')
     res = res.replace(/<\/h.>/g, '\n')
     res = res.replace(/<[^>]*>?/g, '')
