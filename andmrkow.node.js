@@ -382,10 +382,10 @@ transformBold = (markdownLine, params) => {
 
 // take a line
 transformInlineCode = (markdownLine, params) => {
-    regex = /`(.+?)`/g // search if word/sentence is surronded by `
+    regex = /\`(.+?)\`/g // search if word/sentence is surronded by `
     found = markdownLine.match(regex) // put matching word/sentence of th current line in the found array
     for(i in found) { // read found array
-        let data = regex.exec(found[i]) // actualize the regex (otherwise it keep the last matching word/sentence)
+        markdownLine.match(regex) // actualize the regex (otherwise it keep the last matching word/sentence)
 
         let text = RegExp.$1 // text = the text between the `
         if(params["withSyntaxeElements"]) { // if syntaxe elements should be shown

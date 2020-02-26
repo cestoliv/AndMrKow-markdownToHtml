@@ -63,4 +63,4 @@ See also the list of [contributors](https://github.com/cestoliv/bluewrite-client
 
 ## License
 
-This project is licensed under the IOPL - see the [LICENSE.md](LICENSE.md) file for details
+This project is licensed under the ISOPL - see the [LICENSE.md](LICENSE.md) file for details
