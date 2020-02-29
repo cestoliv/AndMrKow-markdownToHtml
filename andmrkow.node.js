@@ -1,12 +1,12 @@
 //AndMrKow-markdownToHtml
 
 exports.render = (text, params = {}) => { // translate markdown into html
-    text = text.replace(/ /g, "&nbsp;") // replace all the space by html space (for allowing multiple space)
+    //text = text.replace(/ /g, "&nbsp;") // replace all the space by html space (for allowing multiple space)
 
-    text = this.escapeChars(text)
-    text = this.transformLinks(text, params)
+    text = escapeChars(text)
+    text = transformLinks(text, params)
     fImage = this.getFirstImage(text) // need to be executed before the transformImages because of the regular expression of getFirstImage
-    text = this.transformImages(text, params)
+    text = transformImages(text, params)
 
     var parsedText = "" // will contain all the html text to return
 
@@ -54,16 +54,18 @@ exports.render = (text, params = {}) => { // translate markdown into html
                 isCode = false // say the current line is not a part of code
             }
 
-            lines[line] = this.transformInlineCode(lines[line], params)
-            lines[line] = this.transformBold(lines[line], params)
-            lines[line] = this.transformItalic(lines[line], params)
-            lines[line] = this.transformQuotes(lines[line], params)
-
-            var nLine = this.transformHeaders(lines[line], params)
+            var nLine = transformHeaders(lines[line], params)
             if(nLine != lines[line]) { // if there is a change, don't surrond the header with <p>
                 noP = true
+                lines[line] = nLine
             }
-            lines[line] = nLine
+            else {
+                lines[line] = transformInlineCode(lines[line], params)
+                lines[line] = transformBold(lines[line], params)
+                lines[line] = transformItalic(lines[line], params)
+                lines[line] = transformQuotes(lines[line], params)
+                lines[line] = transformStartSpace(lines[line])
+            }
         }
 
         if((lines[line] == "" || lines[line] == null) && !isComment) { // if line is empty and is not a comment
@@ -92,8 +94,9 @@ exports.without = (markdown, lenght = "all") => {
     res = res.replace(/<\/p>/g, '\n')
     res = res.replace(/<\/h.>/g, '\n')
     res = res.replace(/<[^>]*>?/g, '')
+    res = res.replace(/&nbsp;/g, " ")
+    res = res.replace(/&emsp;/g, " ")
     res = res.replace(/&/g, "&amp;")
-    res = res.replace(/&emsp/g, " ")
 
     if(lenght != "all") {
         res = res.substr(0, lenght)
@@ -134,6 +137,20 @@ exports.getFirstImage = (text) => {
 }
 
 ////////////////////////////////////FORMAT
+
+//take a line
+transformStartSpace = (markdownLine) => {
+    regex = /^(( +)(.+))$/g // search for start space and text after
+    markdownLine.match(regex) 
+
+    for(i in found) { // read found array
+        let text =  "&nbsp;" * RegExp.$2.length
+        text += RegExp.$3 
+        markdownLine = markdownLine.replace(RegExp.$1, text) // replace the old word/sentence
+    }
+    
+    return markdownLine
+}
 
 //take the all text
 transformLinks = (markdown, params) => {
@@ -253,10 +270,12 @@ transformImages = (markdown, params) => {
 transformHeaders = (markdownLine, params) => {
     let title = false
     let hN = 0
+
     /*h1*/
     if(/^# (.+)$/.exec(markdownLine)) { // search if the current line start with "# "
         title = true
         hN = 1
+        console.log("et mtn")
     }
     /*h2*/
     if(/^## (.+)$/.exec(markdownLine)) { // search if the current line start with "## "
@@ -286,10 +305,11 @@ transformHeaders = (markdownLine, params) => {
 
     if(title) {
         let title = RegExp.$1 // Get the title text
+        console.log("title : " + title)
         let slugTitle = this.slugify(title) // Get the title slug
         let text = params["withSyntaxeElements"] ? "#".repeat(hN) + " " + title : title // text = "## + title"  if syntax element should be shown, otherwise, text = title
         
-        if(params['sharpBefore'] && !params['withSyntaxeElements']) { text = "# " + text } // if in params, add sharp before the title
+        if(params['sharpBefore'] && !params['withSyntaxeElements']) { text = "#" + text } // if in params, add sharp before the title
         if(params['titleAnchor']) { text = '<a href="#' + slugTitle + '">' + text + "</a>"} // if in params, add link to the anchor
 
         let hNb = hN.toString() // number for the title tag (<hX>)
